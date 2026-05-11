@@ -14,10 +14,10 @@ import {
 import { cn } from "@/lib/utils";
 
 const navItems = [
-  { label: "Dashboard", icon: LayoutDashboard, path: "/" },
-  { label: "Training & LMS", icon: GraduationCap, path: "/training" },
-  { label: "Service Dispatch", icon: Radio, path: "/dispatch" },
-  { label: "Partner Pro Shop", icon: ShoppingBag, path: "/shop" },
+  { label: "Dashboard", icon: LayoutDashboard, path: "/app" },
+  { label: "Training & LMS", icon: GraduationCap, path: "/app/training" },
+  { label: "Service Dispatch", icon: Radio, path: "/app/dispatch" },
+  { label: "Partner Pro Shop", icon: ShoppingBag, path: "/app/shop" },
 ];
 
 export default function Sidebar() {
