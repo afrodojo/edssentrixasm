@@ -54,9 +54,9 @@ export default function SentrixHero() {
             </h1>
 
             <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-lg">
-              Cyber threats, workplace safety, and legal logistics shouldn't require ten different vendors.
+              Cyber threats, workplace safety, and physical defense shouldn't require ten different vendors.
               Sentrix is the DMV's first unified platform built to manage your{" "}
-              <span className="text-white font-medium">employee training, physical security audits, and on-demand legal dispatch</span>{" "}
+              <span className="text-white font-medium">employee training, aerial surveillance, executive protection, and on-demand legal dispatch</span>{" "}
               in one secure dashboard.
             </p>
 

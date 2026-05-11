@@ -1,5 +1,5 @@
 import React from "react";
-import { ShieldCheck, Gavel, MapPin, ArrowRight } from "lucide-react";
+import { ShieldCheck, UserCheck, Plane, Scale, ArrowRight } from "lucide-react";
 
 const pillars = [
   {
@@ -14,26 +14,37 @@ const pillars = [
     metrics: ["40+ Courses", "Certificate Download", "Insurance-ready"],
   },
   {
-    icon: Gavel,
+    icon: UserCheck,
     iconBg: "bg-tactical-gold/10 border-tactical-gold/20",
     iconColor: "text-tactical-gold",
     tagColor: "text-tactical-gold",
     borderHover: "hover:border-tactical-gold/30",
-    tag: "Legal Dispatch",
-    title: "On-Demand Legal Dispatch",
-    body: "Stop chasing vendors. Book vetted Mobile Notaries and Process Servers directly to your office with one click. Real-time dispatch tracking included.",
-    metrics: ["< 3 min dispatch", "Vetted providers", "Real-time tracking"],
+    tag: "Executive Protection",
+    title: "Elite Executive Protection",
+    body: "Deploy highly trained, licensed EP agents — armed or unarmed — directly to your executives or high-risk assets. Discrete, professional, mission-ready.",
+    metrics: ["Armed & Unarmed", "Licensed Agents", "24/7 Deployment"],
   },
   {
-    icon: MapPin,
+    icon: Plane,
+    iconBg: "bg-violet-500/10 border-violet-500/20",
+    iconColor: "text-violet-400",
+    tagColor: "text-violet-400",
+    borderHover: "hover:border-violet-500/30",
+    tag: "Aerial Operations",
+    title: "Aerial & Drone Operations",
+    body: "On-demand drone services for perimeter surveillance, Search & Rescue (SAR), and high-resolution aerial mapping and media production.",
+    metrics: ["SAR Capable", "Perimeter Recon", "4K Aerial Media"],
+  },
+  {
+    icon: Scale,
     iconBg: "bg-emerald-500/10 border-emerald-500/20",
     iconColor: "text-emerald-400",
     tagColor: "text-emerald-400",
     borderHover: "hover:border-emerald-500/30",
-    tag: "Physical Security",
-    title: "Physical Security & CPTED",
-    body: "Request line-of-sight landscaping and perimeter vulnerability audits to ensure your physical footprint matches your digital defense using CPTED methodologies.",
-    metrics: ["CPTED Standards", "Perimeter Audits", "LOS Clearing"],
+    tag: "Legal & Site Security",
+    title: "Legal Dispatch & Site Security",
+    body: "Instantly book vetted Mobile Notaries, Process Servers, or request CPTED-compliant landscaping and line-of-sight clearing to harden your physical footprint.",
+    metrics: ["< 3 min dispatch", "CPTED Standards", "LOS Clearing"],
   },
 ];
 
@@ -58,7 +69,7 @@ export default function SentrixPillars() {
         </div>
 
         {/* Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
           {pillars.map((p, i) => (
             <div
               key={i}

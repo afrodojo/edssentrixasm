@@ -19,7 +19,7 @@ export default function SentrixTrustBar() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <p className="text-center text-slate-600 text-[11px] font-bold uppercase tracking-widest mb-8">
-          Enterprise infrastructure. Scaled for your business.
+          Enterprise infrastructure. Scaled for your operations.
         </p>
         <div className="flex flex-wrap items-center justify-center gap-8 sm:gap-12">
           {partners.map((p) => (

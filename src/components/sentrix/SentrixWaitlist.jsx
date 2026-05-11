@@ -43,7 +43,7 @@ export default function SentrixWaitlist() {
         <p className="text-slate-400 text-lg max-w-xl mx-auto leading-relaxed mb-8">
           We're opening Sentrix to a select group of{" "}
           <span className="text-white font-medium">DMV property managers, law firms, and medical clinics.</span>{" "}
-          Sign up today to get your first 3 legal dispatches free.
+          Sign up today to get your first 3 legal dispatches or initial perimeter audit free.
         </p>
 
         {/* Perk pills */}
