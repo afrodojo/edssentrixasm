@@ -17,9 +17,9 @@ import { cn } from "@/lib/utils";
 
 const navItems = [
   { label: "Command Center", icon: LayoutDashboard, path: "/app" },
+  { label: "Dispatch Center", icon: Radio, path: "/app/dispatch" },
   { label: "Compliance LMS", icon: GraduationCap, path: "/app/training" },
-  { label: "Legal Dispatch", icon: Radio, path: "/app/dispatch" },
-  { label: "Partner Pro Shop", icon: ShoppingBag, path: "/app/shop" },
+  { label: "Tactical Ops & Gear", icon: ShoppingBag, path: "/app/shop" },
 ];
 
 const navBottom = [
