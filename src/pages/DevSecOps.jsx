@@ -2,274 +2,145 @@ import React, { useState } from "react";
 import { CheckCircle2, Copy, ChevronDown, ChevronRight, GitBranch, Shield, Cloud, FileCode, Lock, AlertTriangle, Terminal } from "lucide-react";
 import { toast } from "sonner";
 
-const WORKFLOW_YML = `name: EDS Sentrix ASM — CI/CD Pipeline
+const WORKFLOW_YML = `name: EDS Sentrix ASM - Secure Production Deployment
 
 on:
   push:
     branches:
-      - main
-
-env:
-  NODE_VERSION: "20"
+      - main # Only deploys when code is pushed to the main branch
 
 jobs:
-  build-scan-deploy:
-    name: Build · Scan · Deploy
+  security-and-build:
+    name: DevSecOps Scan & Build
     runs-on: ubuntu-latest
 
     steps:
-      # ─── Step 1: Checkout & Environment Setup ─────────────────────────────
-      - name: Checkout Repository
+      - name: 📥 Checkout Repository
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Full history required for secret scanning
 
-      - name: Setup Node.js \${{ env.NODE_VERSION }}
+      - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: \${{ env.NODE_VERSION }}
-          cache: "npm"
+          node-version: '20' # Use LTS version
+          cache: 'npm'
 
-      # ─── Step 2: Install Dependencies ─────────────────────────────────────
-      - name: Install Dependencies
-        run: npm ci --prefer-offline
+      - name: 📦 Install Dependencies
+        run: npm ci
 
-      # ─── Step 3: DevSecOps — Aikido Security Scan ─────────────────────────
-      # CRITICAL: Build FAILS on any critical vulnerability or detected secret.
-      # Configure your Aikido workspace at https://app.aikido.dev
-      - name: Aikido Security Scan (SAST + Secret Scanning)
-        uses: AikidoSec/github-actions-workflow@v1.0.13
+      # AIKIDO SECURITY SCAN (Shift-Left Security)
+      # This fails the build if it finds leaked API keys or critical CVEs
+      - name: 🛡️ Aikido Security Scan
+        uses: aikidosec/github-action@v1
         with:
           secret-key: \${{ secrets.AIKIDO_SECRET_KEY }}
-          fail-on-critical-or-above: true   # Blocks deployment on critical CVEs
-          fail-on-timeout: true
-          minimum-severity: CRITICAL         # SAST threshold
-          scan-secrets: true                 # Detect hardcoded keys / tokens
-          scan-dependencies: true            # SCA — known CVEs in node_modules
+          fail-on-dependency-scan: true
+          fail-on-sast-scan: true
 
-      # ─── Step 4: Next.js Production Build ─────────────────────────────────
-      - name: Build Next.js Application
+      - name: 🏗️ Build Next.js / Node.js Application
         run: npm run build
-        env:
-          NEXT_PUBLIC_APP_ENV: production
-          NEXT_PUBLIC_CLOUDFLARE_BEACON_TOKEN: \${{ secrets.CF_BEACON_TOKEN }}
 
-      # ─── Step 5: Rafter Deployment ─────────────────────────────────────────
-      # Rafter handles infrastructure orchestration & edge deployments.
-      # Docs: https://rafter.app/docs
-      - name: Deploy via Rafter CLI
-        run: |
-          npm install -g @rafter/cli
-          rafter deploy \\
-            --project eds-sentrix-asm \\
-            --environment production \\
-            --token \${{ secrets.RAFTER_API_KEY }} \\
-            --confirm
-        env:
-          RAFTER_API_KEY: \${{ secrets.RAFTER_API_KEY }}
+  deploy-to-rafter:
+    name: Deploy to Rafter & Update Cloudflare
+    needs: security-and-build # Only runs if the security scan & build passes
+    runs-on: ubuntu-latest
 
-      # ─── Step 6: Cloudflare Cache Purge ────────────────────────────────────
-      # Purges all cached assets on Cloudflare edge after every successful deploy.
-      - name: Purge Cloudflare Edge Cache
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      # RAFTER DEPLOYMENT
+      # Replace this with the specific Rafter CLI command or API call
+      - name: 🚀 Deploy Infrastructure via Rafter
         run: |
-          curl -s -X POST "https://api.cloudflare.com/client/v4/zones/\${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \\
+          echo "Deploying Sentrix ASM to Rafter..."
+          curl -X POST https://api.rafter.app/v1/deploy \\
+            -H "Authorization: Bearer \${{ secrets.RAFTER_API_KEY }}" \\
+            -H "Content-Type: application/json" \\
+            -d '{"project_id": "\${{ secrets.RAFTER_PROJECT_ID }}", "branch": "main"}'
+
+      # CLOUDFLARE CACHE PURGE
+      # Ensures clients instantly see the newest secure version of the app
+      - name: ☁️ Purge Cloudflare Cache
+        run: |
+          curl -X POST "https://api.cloudflare.com/client/v4/zones/\${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \\
             -H "Authorization: Bearer \${{ secrets.CLOUDFLARE_API_TOKEN }}" \\
             -H "Content-Type: application/json" \\
-            --data '{"purge_everything": true}' | tee cf_response.json
-          # Fail the step if Cloudflare reports an error
-          grep -q '"success":true' cf_response.json || (echo "Cloudflare cache purge FAILED" && cat cf_response.json && exit 1)
-
-      # ─── Post-Deploy: Notify ────────────────────────────────────────────────
-      - name: Deployment Summary
-        if: success()
-        run: |
-          echo "✅ EDS Sentrix ASM deployed successfully to production."
-          echo "🔒 Aikido scan passed — no critical vulnerabilities."
-          echo "🌐 Cloudflare cache purged."
+            -d '{"purge_everything": true}'
 `;
 
 const NEXT_CONFIG = `/** @type {import('next').NextConfig} */
 
-// ─── Security Headers — NIST SP 800-53 / Zero Trust Aligned ──────────────────
 const securityHeaders = [
   {
-    // Prevent clickjacking (NIST AC-4)
-    key: "X-Frame-Options",
-    value: "DENY",
+    key: 'X-DNS-Prefetch-Control',
+    value: 'on'
   },
   {
-    // Block MIME-type sniffing
-    key: "X-Content-Type-Options",
-    value: "nosniff",
+    key: 'Strict-Transport-Security',
+    value: 'max-age=63072000; includeSubDomains; preload' // Forces HTTPS strictly
   },
   {
-    // Force HTTPS for 2 years — includeSubDomains + preload (NIST SC-8)
-    key: "Strict-Transport-Security",
-    value: "max-age=63072000; includeSubDomains; preload",
+    key: 'X-Frame-Options',
+    value: 'SAMEORIGIN' // Prevents Clickjacking attacks
   },
   {
-    // Restrict referrer info on cross-origin requests
-    key: "Referrer-Policy",
-    value: "strict-origin-when-cross-origin",
+    key: 'X-Content-Type-Options',
+    value: 'nosniff' // Prevents MIME-sniffing
   },
   {
-    // Disable browser features not needed by the app (NIST CM-7)
-    key: "Permissions-Policy",
-    value: "camera=(), microphone=(), geolocation=(), interest-cohort=()",
+    key: 'Referrer-Policy',
+    value: 'strict-origin-when-cross-origin'
   },
   {
-    // Content Security Policy — strict allowlist (NIST SI-10)
-    // Adjust 'connect-src' if you add new API origins
-    key: "Content-Security-Policy",
-    value: [
-      "default-src 'self'",
-      "script-src 'self' 'unsafe-inline' https://static.cloudflareinsights.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-      "font-src 'self' https://fonts.gstatic.com",
-      "img-src 'self' data: blob: https://media.base44.com https://images.unsplash.com",
-      "connect-src 'self' https://api.emergingdefensesolutions.com https://cloudflareinsights.com",
-      "frame-ancestors 'none'",
-      "base-uri 'self'",
-      "form-action 'self'",
-      "upgrade-insecure-requests",
-    ].join("; "),
-  },
+    key: 'Permissions-Policy',
+    value: 'camera=(), microphone=(), geolocation=()' // Blocks unauthorized hardware access
+  }
 ];
 
 const nextConfig = {
-  // ── Strict mode for React (catches side-effect bugs early)
   reactStrictMode: true,
-
-  // ── Disable x-powered-by header (information disclosure prevention)
-  poweredByHeader: false,
-
-  // ── Cloudflare Proxy: trust X-Forwarded-* headers from CF edge
-  // IMPORTANT: Only set this if you are behind Cloudflare or a trusted proxy.
-  // Exposing this without a proxy allows IP spoofing.
-  experimental: {
-    serverActions: {
-      allowedOrigins: ["emergingdefensesolutions.com", "*.emergingdefensesolutions.com"],
-    },
-  },
-
-  // ── Apply security headers to all routes
+  poweredByHeader: false, // Removes the "X-Powered-By: Next.js" header to obscure your tech stack from attackers
   async headers() {
     return [
       {
-        source: "/(.*)",
+        // Apply these headers to all routes in your application
+        source: '/(.*)',
         headers: securityHeaders,
       },
-    ];
+    ]
   },
+}
 
-  // ── Redirect all HTTP → HTTPS (belt-and-suspenders with Cloudflare)
-  async redirects() {
-    return [
-      {
-        source: "/:path*",
-        has: [{ type: "header", key: "x-forwarded-proto", value: "http" }],
-        destination: "https://emergingdefensesolutions.com/:path*",
-        permanent: true,
-      },
-    ];
-  },
-
-  // ── Image optimization — restrict allowed remote domains
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "media.base44.com" },
-      { protocol: "https", hostname: "images.unsplash.com" },
-    ],
-  },
-
-  // ── Output: standalone bundle for containerized / Rafter deployment
-  output: "standalone",
-};
-
-module.exports = nextConfig;
+module.exports = nextConfig
 `;
 
-const ENV_EXAMPLE = `# ════════════════════════════════════════════════════════════════════════════
-# EDS Sentrix ASM — Environment Variables Reference
-# ════════════════════════════════════════════════════════════════════════════
-#
-# ⚠️  SECURITY RULES:
-#     1. NEVER commit real values for keys marked [SECRET] to this file or
-#        any other file tracked by Git.
-#     2. All [SECRET] values MUST live in GitHub Actions Secrets, Rafter's
-#        encrypted environment store, or an Azure Key Vault reference.
-#     3. Only NEXT_PUBLIC_* variables are safe to expose to the browser.
-#        All others are server-side only.
-#     4. Rotate all secrets immediately if any are accidentally committed.
-#
-# ════════════════════════════════════════════════════════════════════════════
+const ENV_EXAMPLE = `# ==============================================================================
+# EDS SENTRIX ASM - ENVIRONMENT VARIABLES
+# ==============================================================================
+# ⚠️ WARNING: DO NOT ADD REAL API KEYS TO THIS FILE. 
+# Real keys go into your local .env file (which is gitignored) 
+# or GitHub Actions Secrets for production.
+# ==============================================================================
 
+# --- Frontend Variables (Safe to expose to the browser) ---
+NEXT_PUBLIC_APP_URL="https://sentrix.emergingdefensesolutions.com"
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY="pk_test_..."
 
-# ── Application ──────────────────────────────────────────────────────────────
-NEXT_PUBLIC_APP_ENV=development              # development | staging | production
-NEXT_PUBLIC_APP_URL=http://localhost:3000
+# --- Node.js Backend Secrets (NEVER EXPOSE TO THE FRONTEND) ---
+DATABASE_URL="postgresql://user:password@host:port/dbname"
+JWT_SECRET="generate_a_strong_random_string_here"
 
+# --- Third-Party Integrations ---
+STRIPE_SECRET_KEY="sk_test_..."
+SENDGRID_API_KEY="SG..."
+TWILIO_AUTH_TOKEN="..."
 
-# ── Cloudflare (Public Beacon — safe to expose) ──────────────────────────────
-NEXT_PUBLIC_CLOUDFLARE_BEACON_TOKEN=your_cf_beacon_token_here
-
-# [SECRET] Cloudflare API Token — Purge Cache permission only
-# Store in: GitHub Actions → Settings → Secrets → CLOUDFLARE_API_TOKEN
-CLOUDFLARE_API_TOKEN=
-
-# [SECRET] Cloudflare Zone ID for emergingdefensesolutions.com
-# Store in: GitHub Actions → Settings → Secrets → CLOUDFLARE_ZONE_ID
-CLOUDFLARE_ZONE_ID=
-
-
-# ── Rafter Deployment ────────────────────────────────────────────────────────
-# [SECRET] Rafter API Key — full deploy access
-# Store in: GitHub Actions → Settings → Secrets → RAFTER_API_KEY
-RAFTER_API_KEY=
-
-
-# ── Aikido Security ──────────────────────────────────────────────────────────
-# [SECRET] Aikido Secret Key for CI scans
-# Store in: GitHub Actions → Settings → Secrets → AIKIDO_SECRET_KEY
-AIKIDO_SECRET_KEY=
-
-
-# ── Database (Server-side ONLY — never expose publicly) ──────────────────────
-# [SECRET] PostgreSQL connection string
-DATABASE_URL=postgresql://user:password@localhost:5432/sentrix_dev
-
-
-# ── Authentication / Azure Identity ─────────────────────────────────────────
-# [SECRET] Azure AD / Entra ID credentials for Zero Trust auth
-AZURE_AD_CLIENT_ID=
-AZURE_AD_CLIENT_SECRET=
-AZURE_AD_TENANT_ID=
-NEXTAUTH_SECRET=generate_with__openssl_rand_-base64_32
-NEXTAUTH_URL=http://localhost:3000
-
-
-# ── Payments (Stripe) ────────────────────────────────────────────────────────
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_publishable_key_here
-# [SECRET] Stripe Secret Key — server-side billing operations ONLY
-STRIPE_SECRET_KEY=
-# [SECRET] Stripe Webhook Signing Secret
-STRIPE_WEBHOOK_SECRET=
-
-
-# ── Notifications ────────────────────────────────────────────────────────────
-# [SECRET] Twilio credentials for SMS dispatch alerts
-TWILIO_ACCOUNT_SID=
-TWILIO_AUTH_TOKEN=
-TWILIO_FROM_NUMBER=
-
-# [SECRET] SendGrid API Key for transactional email
-SENDGRID_API_KEY=
-
-
-# ════════════════════════════════════════════════════════════════════════════
-# REMINDER: Add this file to .gitignore for your actual .env.local file.
-# Only .env.example (with blank secret values) should ever be committed.
-# ════════════════════════════════════════════════════════════════════════════
+# --- CI/CD & Infrastructure (STORE IN GITHUB SECRETS ONLY) ---
+# RAFTER_API_KEY
+# RAFTER_PROJECT_ID
+# CLOUDFLARE_API_TOKEN
+# CLOUDFLARE_ZONE_ID
+# AIKIDO_SECRET_KEY
 `;
 
 const sections = [
@@ -278,7 +149,7 @@ const sections = [
     icon: GitBranch,
     color: "text-emerald-400",
     bg: "bg-emerald-500/10 border-emerald-500/20",
-    badge: ".github/workflows/main.yml",
+    badge: ".github/workflows/deploy.yml",
     title: "GitHub Actions CI/CD Workflow",
     subtitle: "6-step pipeline: Checkout → Install → Aikido Scan → Build → Rafter Deploy → CF Cache Purge",
     code: WORKFLOW_YML,
@@ -414,7 +285,7 @@ export default function DevSecOps() {
               Add these in your repo → Settings → Secrets and variables → Actions. Never hardcode these values.
             </p>
             <div className="flex flex-wrap gap-2">
-              {["AIKIDO_SECRET_KEY", "RAFTER_API_KEY", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID", "CF_BEACON_TOKEN"].map(s => (
+              {["AIKIDO_SECRET_KEY", "RAFTER_API_KEY", "RAFTER_PROJECT_ID", "CLOUDFLARE_API_TOKEN", "CLOUDFLARE_ZONE_ID"].map(s => (
                 <code key={s} className="px-2 py-1 bg-navy-800 border border-navy-700 rounded-md text-[10px] font-mono text-tactical-gold">
                   {s}
                 </code>
