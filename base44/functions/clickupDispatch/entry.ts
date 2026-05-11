@@ -12,7 +12,15 @@ Deno.serve(async (req) => {
       return Response.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { serviceType, serviceName, address, date, notes, priority, requestorName } = await req.json();
+    const body = await req.json();
+    const { serviceType, serviceName, address, date, notes, priority, requestorName, probe } = body;
+
+    // Probe: just check if connection exists
+    if (probe) {
+      const { accessToken } = await base44.asServiceRole.connectors.getCurrentAppUserConnection(CONNECTOR_ID);
+      if (!accessToken) return Response.json({ error: 'No active connection found for this connector' }, { status: 400 });
+      return Response.json({ success: true, connected: true });
+    }
 
     const { accessToken } = await base44.asServiceRole.connectors.getCurrentAppUserConnection(CONNECTOR_ID);
 

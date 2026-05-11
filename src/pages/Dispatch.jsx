@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import PIIMaskedField from "../components/security/PIIMaskedField";
 import ActiveDispatches from "../components/dispatch/ActiveDispatches";
+import ClickUpConnectBanner from "../components/dispatch/ClickUpConnectBanner";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -30,6 +31,20 @@ export default function Dispatch() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [ticketRef, setTicketRef] = useState("");
+  const [clickupConnected, setClickupConnected] = useState(null); // null=unknown, true/false
+
+  useEffect(() => {
+    // Probe connection by making a test call
+    base44.functions.invoke('clickupDispatch', { probe: true, serviceType: 'test', serviceName: 'test', address: 'test' })
+      .then(() => setClickupConnected(true))
+      .catch(err => {
+        if (err?.response?.data?.error?.includes('No active connection')) {
+          setClickupConnected(false);
+        } else {
+          setClickupConnected(true); // other errors mean connected but something else failed
+        }
+      });
+  }, []);
 
   const services = tab === 0 ? legalServices : propertyServices;
 
@@ -69,6 +84,11 @@ export default function Dispatch() {
 
   return (
     <div className="space-y-6 max-w-7xl">
+      {/* ClickUp Connection Banner */}
+      {clickupConnected === false && (
+        <ClickUpConnectBanner onConnected={() => setClickupConnected(true)} />
+      )}
+
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>

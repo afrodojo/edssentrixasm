@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ProductCard from "../components/shop/ProductCard";
+import ClickUpConnectBanner from "../components/dispatch/ClickUpConnectBanner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -89,6 +90,19 @@ export default function Shop() {
   const [opsLoading, setOpsLoading] = useState(false);
   const [opsTicketRef, setOpsTicketRef] = useState("");
   const [opsForm, setOpsForm] = useState({ name: "", date: "", location: "", notes: "" });
+  const [clickupConnected, setClickupConnected] = useState(null);
+
+  useEffect(() => {
+    base44.functions.invoke('clickupDispatch', { probe: true, serviceType: 'test', serviceName: 'test', address: 'test' })
+      .then(() => setClickupConnected(true))
+      .catch(err => {
+        if (err?.response?.data?.error?.includes('No active connection')) {
+          setClickupConnected(false);
+        } else {
+          setClickupConnected(true);
+        }
+      });
+  }, []);
 
   const filtered = products.filter(p => {
     const matchCat = activeCategory === "All" || p.category === activeCategory;
@@ -174,6 +188,11 @@ export default function Shop() {
         </>
       )}
 
+      {/* ClickUp Banner (ops tab only) */}
+      {activeTab === "ops" && clickupConnected === false && (
+        <ClickUpConnectBanner onConnected={() => setClickupConnected(true)} />
+      )}
+
       {/* Ops Booking Tab */}
       {activeTab === "ops" && (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -239,7 +258,7 @@ export default function Shop() {
                   <div>
                     <p className="font-bold text-foreground">Ops Request Received</p>
                     <p className="text-sm text-muted-foreground mt-1">Mission Ref: {opsTicketRef}</p>
-                    <p className="text-xs text-muted-foreground mt-0.5">Task created in ClickUp · Our team will contact you within 2 hours.</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">High-priority task created in ClickUp · Team will contact you within 2 hours.</p>
                   </div>
                   <Button variant="outline" onClick={() => { setOpsSubmitted(false); setSelectedOps(null); setOpsForm({ name: "", date: "", location: "", notes: "" }); }}>New Request</Button>
                 </div>
