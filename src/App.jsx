@@ -7,6 +7,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 
 import Landing from './pages/Landing';
+import Sentrix from './pages/Sentrix';
 import AppLayout from './components/layout/AppLayout';
 import Dashboard from './pages/Dashboard';
 import Training from './pages/Training';
@@ -36,6 +37,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={<Landing />} />
+      <Route path="/sentrix" element={<Sentrix />} />
       <Route element={<AppLayout />}>
         <Route path="/app" element={<Dashboard />} />
         <Route path="/app/training" element={<Training />} />
