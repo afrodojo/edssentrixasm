@@ -4,12 +4,33 @@ module.exports = {
     content: ["./index.html", "./src/**/*.{ts,tsx,js,jsx}"],
   theme: {
   	extend: {
+      fontFamily: {
+        inter: ['var(--font-inter)'],
+      },
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
+        navy: {
+          50: '#f0f3f9',
+          100: '#dce3f0',
+          200: '#b8c7e1',
+          300: '#8ba3cc',
+          400: '#5f7fb7',
+          500: '#3d5a9e',
+          600: '#2d4580',
+          700: '#1e3160',
+          800: '#0f1d40',
+          900: '#0A1628',
+          950: '#050b14',
+        },
+        tactical: {
+          red: '#DC2626',
+          gold: '#F59E0B',
+          amber: '#D97706',
+        },
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -63,20 +84,12 @@ module.exports = {
   		},
   		keyframes: {
   			'accordion-down': {
-  				from: {
-  					height: '0'
-  				},
-  				to: {
-  					height: 'var(--radix-accordion-content-height)'
-  				}
+  				from: { height: '0' },
+  				to: { height: 'var(--radix-accordion-content-height)' }
   			},
   			'accordion-up': {
-  				from: {
-  					height: 'var(--radix-accordion-content-height)'
-  				},
-  				to: {
-  					height: '0'
-  				}
+  				from: { height: 'var(--radix-accordion-content-height)' },
+  				to: { height: '0' }
   			}
   		},
   		animation: {
