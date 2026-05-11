@@ -37,12 +37,19 @@ export default function SentrixHero() {
 
           {/* LEFT — Copy */}
           <div>
-            {/* Product badge */}
-            <div className="inline-flex items-center gap-2 bg-tactical-gold/10 border border-tactical-gold/25 rounded-full px-4 py-1.5 mb-7">
-              <div className="w-1.5 h-1.5 bg-tactical-gold rounded-full animate-pulse" />
-              <span className="text-tactical-gold text-xs font-bold uppercase tracking-widest">
-                EDS Sentrix ASM · Attack Surface Management
-              </span>
+            {/* Logo + badge */}
+            <div className="flex items-center gap-4 mb-7">
+              <img
+                src="https://media.base44.com/images/public/6a01a7f0046386899eee80d5/483e87ca1_1778520471105.png"
+                alt="EDS Sentrix ASM"
+                className="h-14 w-auto object-contain"
+              />
+              <div className="inline-flex items-center gap-2 bg-tactical-gold/10 border border-tactical-gold/25 rounded-full px-3 py-1.5">
+                <div className="w-1.5 h-1.5 bg-tactical-gold rounded-full animate-pulse" />
+                <span className="text-tactical-gold text-[11px] font-bold uppercase tracking-widest">
+                  Attack Surface Management
+                </span>
+              </div>
             </div>
 
             <h1 className="text-4xl sm:text-5xl xl:text-[3.4rem] font-black tracking-tight leading-[1.08] mb-6">

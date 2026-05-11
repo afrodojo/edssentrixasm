@@ -5,7 +5,6 @@ import {
   GraduationCap, 
   Radio, 
   ShoppingBag, 
-  Shield, 
   ChevronLeft, 
   ChevronRight,
   Menu,
@@ -32,9 +31,12 @@ export default function Sidebar() {
         <button onClick={() => setMobileOpen(true)} className="text-white p-2 -ml-2">
           <Menu className="w-6 h-6" />
         </button>
-        <div className="flex items-center gap-2.5 ml-3">
-          <Shield className="w-6 h-6 text-tactical-gold" />
-          <span className="text-white font-bold text-lg tracking-tight">EDS Ready Hub</span>
+        <div className="flex items-center ml-3">
+          <img
+            src="https://media.base44.com/images/public/6a01a7f0046386899eee80d5/483e87ca1_1778520471105.png"
+            alt="EDS Sentrix ASM"
+            className="h-8 w-auto object-contain"
+          />
         </div>
       </div>
 
@@ -68,16 +70,20 @@ function SidebarContent({ collapsed, location, onClose, showClose }) {
   return (
     <div className="flex flex-col h-full">
       {/* Logo */}
-      <div className="h-20 flex items-center px-5 border-b border-navy-700/50 shrink-0">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="w-10 h-10 bg-tactical-gold/10 border border-tactical-gold/30 rounded-lg flex items-center justify-center shrink-0">
-            <Shield className="w-5 h-5 text-tactical-gold" />
-          </div>
-          {!collapsed && (
-            <div className="min-w-0">
-              <h1 className="text-white font-bold text-base tracking-tight leading-tight">EDS Ready Hub</h1>
-              <p className="text-slate-500 text-[11px] font-medium tracking-wider uppercase">Defense Platform</p>
-            </div>
+      <div className="h-20 flex items-center px-4 border-b border-navy-700/50 shrink-0">
+        <div className="flex items-center min-w-0">
+          {collapsed ? (
+            <img
+              src="https://media.base44.com/images/public/6a01a7f0046386899eee80d5/483e87ca1_1778520471105.png"
+              alt="EDS"
+              className="h-9 w-9 object-contain"
+            />
+          ) : (
+            <img
+              src="https://media.base44.com/images/public/6a01a7f0046386899eee80d5/483e87ca1_1778520471105.png"
+              alt="EDS Sentrix ASM"
+              className="h-11 w-auto object-contain"
+            />
           )}
         </div>
         {showClose && (

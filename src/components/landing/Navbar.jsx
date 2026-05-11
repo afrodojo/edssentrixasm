@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Shield, Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Navbar({ onJoinBeta }) {
@@ -23,16 +23,12 @@ export default function Navbar({ onJoinBeta }) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16 sm:h-18">
           {/* Logo */}
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 bg-amber-500/10 border border-amber-500/30 rounded-lg flex items-center justify-center">
-              <Shield className="w-4 h-4 text-amber-400" />
-            </div>
-            <div>
-              <span className="text-white font-bold text-base tracking-tight">EDS Ready Hub</span>
-              <span className="hidden sm:block text-[10px] text-slate-500 font-medium tracking-widest uppercase leading-none">
-                by Emerging Defense Solutions
-              </span>
-            </div>
+          <div className="flex items-center">
+            <img
+              src="https://media.base44.com/images/public/6a01a7f0046386899eee80d5/483e87ca1_1778520471105.png"
+              alt="EDS Sentrix ASM"
+              className="h-10 w-auto object-contain"
+            />
           </div>
 
           {/* Desktop CTA */}
