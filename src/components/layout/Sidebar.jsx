@@ -10,7 +10,8 @@ import {
   Menu,
   X,
   ShieldAlert,
-  Settings
+  Settings,
+  GitBranch
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -23,6 +24,7 @@ const navItems = [
 
 const navBottom = [
   { label: "Security & Audit Logs", icon: ShieldAlert, path: "/app/audit" },
+  { label: "DevSecOps & CI/CD", icon: GitBranch, path: "/app/devsecops" },
   { label: "Admin Settings", icon: Settings, path: "/app/settings" },
 ];
 

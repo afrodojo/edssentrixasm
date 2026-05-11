@@ -15,6 +15,7 @@ import Dispatch from './pages/Dispatch';
 import Shop from './pages/Shop';
 import AuditLogs from './pages/AuditLogs';
 import AdminSettings from './pages/AdminSettings';
+import DevSecOps from './pages/DevSecOps';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -47,6 +48,7 @@ const AuthenticatedApp = () => {
         <Route path="/app/shop" element={<Shop />} />
         <Route path="/app/audit" element={<AuditLogs />} />
         <Route path="/app/settings" element={<AdminSettings />} />
+        <Route path="/app/devsecops" element={<DevSecOps />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
