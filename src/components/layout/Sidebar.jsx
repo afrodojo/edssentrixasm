@@ -8,7 +8,9 @@ import {
   ChevronLeft, 
   ChevronRight,
   Menu,
-  X
+  X,
+  ShieldAlert,
+  Settings
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -17,6 +19,11 @@ const navItems = [
   { label: "Compliance LMS", icon: GraduationCap, path: "/app/training" },
   { label: "Legal Dispatch", icon: Radio, path: "/app/dispatch" },
   { label: "Partner Pro Shop", icon: ShoppingBag, path: "/app/shop" },
+];
+
+const navBottom = [
+  { label: "Security & Audit Logs", icon: ShieldAlert, path: "/app/audit" },
+  { label: "Admin Settings", icon: Settings, path: "/app/settings" },
 ];
 
 export default function Sidebar() {
@@ -121,7 +128,33 @@ function SidebarContent({ collapsed, location, onClose, showClose }) {
         })}
       </nav>
 
-      {/* Bottom */}
+      {/* Secondary nav */}
+      <div className="px-3 pb-3 space-y-1.5 border-t border-navy-700/40 pt-3">
+        {navBottom.map((item) => {
+          const isActive = location.pathname === item.path;
+          return (
+            <Link
+              key={item.path}
+              to={item.path}
+              onClick={onClose}
+              className={cn(
+                "flex items-center gap-3 px-3 py-2.5 rounded-lg transition-all duration-200 group relative",
+                isActive
+                  ? "bg-tactical-gold/10 text-tactical-gold"
+                  : "text-slate-500 hover:text-white hover:bg-navy-800"
+              )}
+            >
+              {isActive && (
+                <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-6 bg-tactical-gold rounded-r-full" />
+              )}
+              <item.icon className={cn("w-5 h-5 shrink-0", isActive && "text-tactical-gold")} />
+              {!collapsed && <span className="font-medium text-sm">{item.label}</span>}
+            </Link>
+          );
+        })}
+      </div>
+
+      {/* User */}
       {!collapsed && (
         <div className="px-4 py-4 border-t border-navy-700/50">
           <div className="flex items-center gap-3">
