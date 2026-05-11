@@ -1,49 +1,60 @@
 import React from "react";
-import { Shield, Gavel, Eye, ShoppingCart, ArrowRight } from "lucide-react";
+import { ShieldCheck, UserCheck, Plane, Scale, ShoppingBag, ArrowRight } from "lucide-react";
 
 const features = [
   {
-    icon: Shield,
+    icon: ShieldCheck,
     color: "from-blue-500/20 to-blue-600/5",
     border: "border-blue-500/20",
     iconBg: "bg-blue-500/10 border-blue-500/20",
     iconColor: "text-blue-400",
-    tag: "Training & LMS",
+    tag: "Module 1 — Compliance LMS",
     title: "Continuous Compliance Training",
-    body: "Automated employee training for Cyber Threats, Active Shooter Response, and CPR. Download certificates instantly to negotiate lower insurance premiums.",
+    body: "Automated micro-courses for Cyber Awareness, Active Shooter Response, and CPR/First Aid. Auto-generate certificates to negotiate lower insurance premiums.",
     cta: "Explore Training",
   },
   {
-    icon: Gavel,
-    color: "from-amber-500/20 to-amber-600/5",
-    border: "border-amber-500/20",
-    iconBg: "bg-amber-500/10 border-amber-500/20",
-    iconColor: "text-amber-400",
-    tag: "Legal Dispatch",
-    title: "On-Demand Legal Dispatch",
-    body: "Instantly book vetted Mobile Notaries and Process Servers directly to your office or client's location. Uber-style dispatching — track arrival in real-time.",
-    cta: "See How It Works",
+    icon: UserCheck,
+    color: "from-tactical-gold/10 to-tactical-gold/5",
+    border: "border-tactical-gold/20",
+    iconBg: "bg-tactical-gold/10 border-tactical-gold/20",
+    iconColor: "text-tactical-gold",
+    tag: "Module 2 — Executive Protection",
+    title: "Elite Executive Protection",
+    body: "Deploy licensed, highly trained EP agents — armed or unarmed — directly to your executives or high-risk assets. Discrete, professional, mission-ready.",
+    cta: "Book EP Agents",
   },
   {
-    icon: Eye,
-    color: "from-emerald-500/20 to-emerald-600/5",
-    border: "border-emerald-500/20",
-    iconBg: "bg-emerald-500/10 border-emerald-500/20",
-    iconColor: "text-emerald-400",
-    tag: "Physical Security",
-    title: "Physical Perimeter Audits",
-    body: "Leverage CPTED standards. Book landscaping and line-of-sight clearing to physically harden your property against threats and reduce liability.",
-    cta: "Learn About CPTED",
-  },
-  {
-    icon: ShoppingCart,
+    icon: Plane,
     color: "from-violet-500/20 to-violet-600/5",
     border: "border-violet-500/20",
     iconBg: "bg-violet-500/10 border-violet-500/20",
     iconColor: "text-violet-400",
-    tag: "Pro Shop",
-    title: "Partner Pro Shop",
-    body: "Equip your team with discounted 5.11 Tactical gear and Right to Bear legal defense policies directly from your dashboard — B2B pricing, delivered.",
+    tag: "Module 3 — Aerial Operations",
+    title: "Drone & Aerial Operations",
+    body: "On-demand drone services for perimeter surveillance, Search & Rescue (SAR), and 4K aerial mapping. Dispatch a drone team to your site in hours.",
+    cta: "Request Aerial Ops",
+  },
+  {
+    icon: Scale,
+    color: "from-emerald-500/20 to-emerald-600/5",
+    border: "border-emerald-500/20",
+    iconBg: "bg-emerald-500/10 border-emerald-500/20",
+    iconColor: "text-emerald-400",
+    tag: "Module 4 — Legal & Site Security",
+    title: "Legal Dispatch & Site Hardening",
+    body: "Instantly book vetted Mobile Notaries, Process Servers, or CPTED-compliant landscaping to harden your physical footprint. Real-time tracking included.",
+    cta: "Dispatch Now",
+  },
+  {
+    icon: ShoppingBag,
+    color: "from-tactical-red/10 to-tactical-red/5",
+    border: "border-tactical-red/20",
+    iconBg: "bg-tactical-red/10 border-tactical-red/20",
+    iconColor: "text-tactical-red",
+    tag: "Partner Pro Shop",
+    title: "B2B Partner Pro Shop",
+    body: "Bulk-order 5.11 Tactical gear for your security team, enroll in Right to Bear legal defense policies, and request Cisco Meraki or Azure upgrades — all in-dashboard.",
     cta: "Browse Pro Shop",
   },
 ];
@@ -61,18 +72,17 @@ export default function FeaturesSection() {
           </div>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-5">
             The DMV's First<br />
-            <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
-              Unified Readiness Platform
+            <span className="text-tactical-gold">
+              Unified Attack Surface Platform
             </span>
           </h2>
           <p className="text-slate-400 text-lg leading-relaxed">
-            Everything your business needs to stay compliant, legally covered, physically secure,
-            and properly equipped — in one dashboard.
+            Five integrated modules. One dashboard. Total coverage across your digital, physical, legal, and operational attack surface.
           </p>
         </div>
 
         {/* Feature grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {features.map((f, i) => (
             <div
               key={i}

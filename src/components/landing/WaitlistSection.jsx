@@ -34,15 +34,15 @@ export default function WaitlistSection() {
 
         <h2 className="text-3xl sm:text-4xl lg:text-5xl font-black tracking-tight text-white mb-5">
           Secure Your Spot<br />
-          <span className="bg-gradient-to-r from-amber-400 to-amber-300 bg-clip-text text-transparent">
-            in the Beta.
+          <span className="text-tactical-gold">
+            in the EDS Sentrix ASM Beta.
           </span>
         </h2>
 
         <p className="text-slate-400 text-lg leading-relaxed mb-8 max-w-xl mx-auto">
-          We're opening beta access to a select number of{" "}
-          <span className="text-slate-200 font-medium">law firms, property managers, and SMBs</span>{" "}
-          in the DMV area. Join now to claim your early-bird benefits.
+          We're opening EDS Sentrix ASM to a select group of{" "}
+          <span className="text-white font-medium">DMV property managers, law firms, and medical clinics.</span>{" "}
+          Sign up today to get your first 3 legal dispatches or initial perimeter audit free.
         </p>
 
         {/* Perks */}
