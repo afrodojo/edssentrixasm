@@ -1,0 +1,79 @@
+{
+  "name": "SDLCProject",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "organization_name": {
+      "type": "string"
+    },
+    "project_name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "phase": {
+      "type": "string",
+      "enum": [
+        "planning",
+        "requirements",
+        "design",
+        "development",
+        "testing",
+        "deployment",
+        "maintenance"
+      ],
+      "default": "planning"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "on_track",
+        "at_risk",
+        "blocked",
+        "completed"
+      ],
+      "default": "on_track"
+    },
+    "priority": {
+      "type": "string",
+      "enum": [
+        "low",
+        "medium",
+        "high",
+        "critical"
+      ],
+      "default": "medium"
+    },
+    "assigned_to": {
+      "type": "string"
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "target_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "completion_pct": {
+      "type": "number",
+      "default": 0
+    },
+    "tech_stack": {
+      "type": "string"
+    },
+    "repo_url": {
+      "type": "string"
+    },
+    "clickup_id": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "project_name",
+    "organization_id"
+  ]
+}

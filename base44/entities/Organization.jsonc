@@ -1,0 +1,83 @@
+{
+  "name": "Organization",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Organization name"
+    },
+    "domain": {
+      "type": "string",
+      "description": "Primary domain (e.g. acme.com)"
+    },
+    "industry": {
+      "type": "string",
+      "enum": [
+        "law_firm",
+        "property_management",
+        "medical_clinic",
+        "corporate",
+        "government",
+        "other"
+      ],
+      "default": "corporate"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "trial",
+        "suspended",
+        "churned"
+      ],
+      "default": "trial"
+    },
+    "plan": {
+      "type": "string",
+      "enum": [
+        "starter",
+        "professional",
+        "enterprise"
+      ],
+      "default": "starter"
+    },
+    "seat_count": {
+      "type": "number",
+      "default": 1
+    },
+    "monthly_revenue": {
+      "type": "number",
+      "default": 0
+    },
+    "billing_cycle": {
+      "type": "string",
+      "enum": [
+        "monthly",
+        "annual"
+      ],
+      "default": "monthly"
+    },
+    "next_billing_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "contact_name": {
+      "type": "string"
+    },
+    "contact_email": {
+      "type": "string"
+    },
+    "contact_phone": {
+      "type": "string"
+    },
+    "hubspot_id": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "name"
+  ]
+}

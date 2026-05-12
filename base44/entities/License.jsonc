@@ -1,0 +1,70 @@
+{
+  "name": "License",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string",
+      "description": "Reference to Organization"
+    },
+    "organization_name": {
+      "type": "string"
+    },
+    "product": {
+      "type": "string",
+      "enum": [
+        "sentrix_asm",
+        "compliance_lms",
+        "dispatch_module",
+        "aerial_ops",
+        "ep_module",
+        "pro_shop",
+        "socaas"
+      ],
+      "description": "Licensed product module"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "expired",
+        "pending",
+        "revoked"
+      ],
+      "default": "pending"
+    },
+    "license_key": {
+      "type": "string"
+    },
+    "seats_licensed": {
+      "type": "number",
+      "default": 1
+    },
+    "seats_used": {
+      "type": "number",
+      "default": 0
+    },
+    "valid_from": {
+      "type": "string",
+      "format": "date"
+    },
+    "valid_until": {
+      "type": "string",
+      "format": "date"
+    },
+    "auto_renew": {
+      "type": "boolean",
+      "default": true
+    },
+    "unit_price": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "organization_id",
+    "product"
+  ]
+}

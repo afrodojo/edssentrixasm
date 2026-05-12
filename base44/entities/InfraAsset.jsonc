@@ -1,0 +1,81 @@
+{
+  "name": "InfraAsset",
+  "type": "object",
+  "properties": {
+    "organization_id": {
+      "type": "string"
+    },
+    "organization_name": {
+      "type": "string"
+    },
+    "asset_name": {
+      "type": "string"
+    },
+    "asset_type": {
+      "type": "string",
+      "enum": [
+        "server",
+        "firewall",
+        "router",
+        "endpoint",
+        "cloud_instance",
+        "database",
+        "vpn",
+        "domain",
+        "ssl_cert",
+        "other"
+      ],
+      "default": "server"
+    },
+    "provider": {
+      "type": "string",
+      "enum": [
+        "azure",
+        "aws",
+        "gcp",
+        "cloudflare",
+        "on_premise",
+        "other"
+      ],
+      "default": "azure"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "healthy",
+        "warning",
+        "critical",
+        "offline"
+      ],
+      "default": "healthy"
+    },
+    "ip_address": {
+      "type": "string"
+    },
+    "region": {
+      "type": "string"
+    },
+    "os": {
+      "type": "string"
+    },
+    "last_patched": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "monthly_cost": {
+      "type": "number",
+      "default": 0
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "asset_name",
+    "organization_id"
+  ]
+}

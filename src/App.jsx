@@ -15,6 +15,7 @@ import Dispatch from './pages/Dispatch';
 import Shop from './pages/Shop';
 import AuditLogs from './pages/AuditLogs';
 import AdminSettings from './pages/AdminSettings';
+import AdminDashboard from './pages/AdminDashboard';
 import DevSecOps from './pages/DevSecOps';
 import SOCaaS from './pages/SOCaaS';
 import PrivacyPolicy from './pages/PrivacyPolicy';
@@ -55,6 +56,7 @@ const AuthenticatedApp = () => {
         <Route path="/app/settings" element={<AdminSettings />} />
         <Route path="/app/devsecops" element={<DevSecOps />} />
         <Route path="/app/socaas" element={<SOCaaS />} />
+        <Route path="/app/admin" element={<AdminDashboard />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
