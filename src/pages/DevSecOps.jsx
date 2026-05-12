@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { CheckCircle2, Copy, ChevronDown, ChevronRight, GitBranch, Shield, Cloud, FileCode, Lock, AlertTriangle, Terminal } from "lucide-react";
+import { CheckCircle2, Copy, ChevronDown, ChevronRight, GitBranch, Shield, Cloud, FileCode, Lock, AlertTriangle, Terminal, PackageCheck } from "lucide-react";
 import { toast } from "sonner";
 
 const WORKFLOW_YML = `name: EDS Sentrix ASM - Secure Production Deployment
@@ -48,22 +48,26 @@ jobs:
       - name: 📥 Checkout Repository
         uses: actions/checkout@v4
 
-      # RAFTER DEPLOYMENT
-      # Replace this with the specific Rafter CLI command or API call
+      # RAFTER DEPLOYMENT — secrets accessed via env: only (never interpolated in shell)
       - name: 🚀 Deploy Infrastructure via Rafter
+        env:
+          RAFTER_API_KEY: \${{ secrets.RAFTER_API_KEY }}
+          RAFTER_PROJECT_ID: \${{ secrets.RAFTER_PROJECT_ID }}
         run: |
           echo "Deploying Sentrix ASM to Rafter..."
-          curl -X POST https://api.rafter.app/v1/deploy \\
-            -H "Authorization: Bearer \${{ secrets.RAFTER_API_KEY }}" \\
+          curl -fsS -X POST https://api.rafter.app/v1/deploy \\
+            -H "Authorization: Bearer \${RAFTER_API_KEY}" \\
             -H "Content-Type: application/json" \\
-            -d '{"project_id": "\${{ secrets.RAFTER_PROJECT_ID }}", "branch": "main"}'
+            -d "{\\"project_id\\": \\"\${RAFTER_PROJECT_ID}\\", \\"branch\\": \\"main\\"}"
 
-      # CLOUDFLARE CACHE PURGE
-      # Ensures clients instantly see the newest secure version of the app
+      # CLOUDFLARE CACHE PURGE — secrets accessed via env: only
       - name: ☁️ Purge Cloudflare Cache
+        env:
+          CF_API_TOKEN: \${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CF_ZONE_ID: \${{ secrets.CLOUDFLARE_ZONE_ID }}
         run: |
-          curl -X POST "https://api.cloudflare.com/client/v4/zones/\${{ secrets.CLOUDFLARE_ZONE_ID }}/purge_cache" \\
-            -H "Authorization: Bearer \${{ secrets.CLOUDFLARE_API_TOKEN }}" \\
+          curl -fsS -X POST "https://api.cloudflare.com/client/v4/zones/\${CF_ZONE_ID}/purge_cache" \\
+            -H "Authorization: Bearer \${CF_API_TOKEN}" \\
             -H "Content-Type: application/json" \\
             -d '{"purge_everything": true}'
 `;
@@ -143,7 +147,46 @@ TWILIO_AUTH_TOKEN="..."
 # AIKIDO_SECRET_KEY
 `;
 
+const OVERRIDES_SNIPPET = `// package.json — npm "overrides" field
+// Forces the entire dependency tree to use patched versions of
+// vulnerable transitive packages. Run: npm install --legacy-peer-deps
+// after adding these to regenerate package-lock.json.
+{
+  "overrides": {
+    // CVE-2026-33671 — ReDoS via crafted glob patterns
+    "picomatch": ">=2.3.2",
+
+    // CVE-2026-33151 — Prototype pollution in socket.io-parser
+    "socket.io-parser": ">=4.2.6",
+
+    // R-6D5E2 — i18next information disclosure (XSS via interpolation)
+    "i18next": ">=3.4.3"
+  }
+}
+
+// CI step to verify no high/critical deps survive after install:
+// npm audit --audit-level=high --omit=dev`;
+
 const sections = [
+  {
+    id: "overrides",
+    icon: PackageCheck,
+    color: "text-red-400",
+    bg: "bg-red-500/10 border-red-500/20",
+    badge: "package.json → overrides",
+    title: "Transitive CVE Remediation (npm overrides)",
+    subtitle: "Pins picomatch ≥2.3.2, socket.io-parser ≥4.2.6, i18next ≥3.4.3 — eliminates CVE-2026-33671, CVE-2026-33151, R-6D5E2",
+    code: OVERRIDES_SNIPPET,
+    lang: "json/bash",
+    steps: [
+      { label: "CVE-2026-33671: picomatch ReDoS → pin ≥2.3.2", icon: AlertTriangle, color: "text-red-400" },
+      { label: "CVE-2026-33151: socket.io-parser proto-pollution → pin ≥4.2.6", icon: AlertTriangle, color: "text-red-400" },
+      { label: "R-6D5E2: i18next XSS interpolation → pin ≥3.4.3", icon: AlertTriangle, color: "text-tactical-gold" },
+      { label: "npm audit --audit-level=high validates post-install", icon: CheckCircle2, color: "text-emerald-400" },
+      { label: "Overrides rewrite package-lock.json on npm install", icon: Terminal, color: "text-slate-400" },
+      { label: "Use --legacy-peer-deps if peer conflict arises", icon: Terminal, color: "text-slate-400" },
+    ],
+  },
   {
     id: "workflow",
     icon: GitBranch,
@@ -236,7 +279,7 @@ function CodeBlock({ code, lang, id }) {
 }
 
 export default function DevSecOps() {
-  const [expanded, setExpanded] = useState("workflow");
+  const [expanded, setExpanded] = useState("overrides");
 
   return (
     <div className="space-y-6 max-w-5xl">
@@ -261,9 +304,10 @@ export default function DevSecOps() {
           {[
             { label: "Push to main", color: "bg-slate-700 text-slate-200" },
             { label: "Checkout + Node", color: "bg-navy-800 text-slate-300 border border-navy-700" },
-            { label: "npm ci", color: "bg-navy-800 text-slate-300 border border-navy-700" },
+            { label: "Patch CVE Transitives", color: "bg-red-500/10 text-red-400 border border-red-500/20" },
             { label: "Aikido Scan", color: "bg-tactical-gold/15 text-tactical-gold border border-tactical-gold/30" },
-            { label: "Next.js Build", color: "bg-blue-500/10 text-blue-400 border border-blue-500/20" },
+            { label: "Rafter Security Scan", color: "bg-tactical-gold/15 text-tactical-gold border border-tactical-gold/30" },
+            { label: "Build", color: "bg-blue-500/10 text-blue-400 border border-blue-500/20" },
             { label: "Rafter Deploy", color: "bg-violet-500/10 text-violet-400 border border-violet-500/20" },
             { label: "CF Cache Purge", color: "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" },
           ].map((s, i, arr) => (

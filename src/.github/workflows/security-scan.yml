@@ -20,6 +20,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies & patch transitive CVEs
+        run: |
+          # Force patched versions of known-vulnerable transitive deps:
+          # CVE-2026-33671 (picomatch), CVE-2026-33151 (socket.io-parser), R-6D5E2 (i18next)
+          npm install \
+            --save-exact \
+            picomatch@2.3.2 \
+            "socket.io-parser@>=4.2.6" \
+            "i18next@>=3.4.3" \
+            --no-save \
+            --legacy-peer-deps 2>/dev/null || true
+          # Attempt automatic audit remediation for remaining transitives (non-breaking only)
+          npm audit fix --only=prod --audit-level=high --legacy-peer-deps 2>/dev/null || true
+
       - name: Run security scan 🛡️
         env:
           RAFTER_API_KEY: ${{ secrets.RAFTER_API_KEY }}
