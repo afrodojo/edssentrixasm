@@ -27,7 +27,7 @@ export default function Navbar({ onJoinBeta }) {
             <img
               src="https://media.base44.com/images/public/6a01a7f0046386899eee80d5/483e87ca1_1778520471105.png"
               alt="EDS Sentrix ASM"
-              className="h-10 w-auto object-contain"
+              className="h-14 w-auto object-contain"
             />
           </div>
 
