@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Shield, AlertTriangle, Activity, Wifi, Monitor, Server, Globe, ZapOff, ShieldAlert, Radio, CheckCircle2, XCircle, Clock, ChevronRight } from "lucide-react";
+import { Shield, AlertTriangle, Activity, Wifi, Monitor, Server, Globe, ZapOff, ShieldAlert, Radio, CheckCircle2, XCircle, Clock, ChevronRight, Database, Search, Lock, Cpu, FileSearch, Bell, Network, Eye, BarChart2, RefreshCw } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -119,6 +119,135 @@ export default function SOCaaS() {
           </div>
         </CardContent>
       </Card>
+
+      {/* MSSP / SIEM Solutions Section */}
+      <div>
+        <div className="flex items-center gap-3 mb-4">
+          <div className="w-8 h-8 bg-violet-500/10 border border-violet-500/20 rounded-lg flex items-center justify-center">
+            <Database className="w-4 h-4 text-violet-400" />
+          </div>
+          <div>
+            <h2 className="text-base font-bold text-foreground">MSSP / SIEM Solutions</h2>
+            <p className="text-xs text-muted-foreground">Managed security services & security information event management stack</p>
+          </div>
+          <span className="ml-auto text-[10px] font-bold tracking-widest text-violet-400 bg-violet-500/10 border border-violet-500/20 px-2 py-1 rounded-full">FULLY MANAGED</span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[
+            {
+              icon: Database,
+              color: "text-violet-400",
+              bg: "bg-violet-500/10 border-violet-500/20",
+              title: "SIEM Log Aggregation",
+              status: "14,200 events/min",
+              statusColor: "text-violet-400",
+              desc: "Centralized ingestion of logs from endpoints, cloud workloads, firewalls, and SaaS apps. Normalized into a unified event schema for correlation and analysis.",
+              tags: ["Splunk-compatible", "CEF/Syslog", "S3 export"],
+            },
+            {
+              icon: Search,
+              color: "text-blue-400",
+              bg: "bg-blue-500/10 border-blue-500/20",
+              title: "Threat Hunting",
+              status: "Active",
+              statusColor: "text-blue-400",
+              desc: "Proactive analyst-led hunts for TTPs mapped to MITRE ATT&CK. Identifies dormant adversaries and lateral movement before alerts fire.",
+              tags: ["MITRE ATT&CK", "IOC Sweep", "Behavioral"],
+            },
+            {
+              icon: Bell,
+              color: "text-amber-400",
+              bg: "bg-amber-500/10 border-amber-500/20",
+              title: "Alert Triage & Response",
+              status: "< 4 min MTTR",
+              statusColor: "text-amber-400",
+              desc: "Tier 1/2/3 SOC analysts triage all alerts 24/7. False positives are suppressed. Confirmed incidents trigger automated playbooks and human escalation.",
+              tags: ["24/7 Analyst", "Playbooks", "Auto-remediate"],
+            },
+            {
+              icon: Network,
+              color: "text-emerald-400",
+              bg: "bg-emerald-500/10 border-emerald-500/20",
+              title: "NDR — Network Detection",
+              status: "Live",
+              statusColor: "text-emerald-400",
+              desc: "Deep packet inspection and east-west traffic analysis to detect C2 communication, data exfiltration, and lateral movement across your network segments.",
+              tags: ["East-West", "DPI", "C2 Detection"],
+            },
+            {
+              icon: Cpu,
+              color: "text-cyan-400",
+              bg: "bg-cyan-500/10 border-cyan-500/20",
+              title: "EDR — Endpoint Detection",
+              status: `${endpointStatus.length} Endpoints`,
+              statusColor: "text-cyan-400",
+              desc: "Lightweight agent-based telemetry on all managed endpoints. Real-time process monitoring, memory injection detection, and automated isolation of compromised hosts.",
+              tags: ["Win / Mac / Linux", "Memory analysis", "Auto-isolate"],
+            },
+            {
+              icon: FileSearch,
+              color: "text-rose-400",
+              bg: "bg-rose-500/10 border-rose-500/20",
+              title: "Vulnerability Management",
+              status: "Continuous",
+              statusColor: "text-rose-400",
+              desc: "Integrated with Aikido Security for continuous CVE scanning of code, containers, and infrastructure. Risk-prioritized patch recommendations with SLA tracking.",
+              tags: ["Aikido", "CVE / CVSS", "Patch SLA"],
+            },
+            {
+              icon: Lock,
+              color: "text-orange-400",
+              bg: "bg-orange-500/10 border-orange-500/20",
+              title: "Identity & Access Analytics",
+              status: "UEBA Active",
+              statusColor: "text-orange-400",
+              desc: "User and Entity Behavior Analytics (UEBA) baseline normal login patterns and flag anomalous access — impossible travel, privilege escalation, off-hours activity.",
+              tags: ["UEBA", "MFA Enforcement", "SSO"],
+            },
+            {
+              icon: Eye,
+              color: "text-indigo-400",
+              bg: "bg-indigo-500/10 border-indigo-500/20",
+              title: "Dark Web & Threat Intel",
+              status: "Monitoring",
+              statusColor: "text-indigo-400",
+              desc: "Continuous dark web surveillance for leaked credentials, brand impersonation, and data dumps tied to your organization. Intelligence feeds enrich SIEM correlation rules.",
+              tags: ["Credential Leaks", "Brand Intel", "OSINT"],
+            },
+            {
+              icon: BarChart2,
+              color: "text-teal-400",
+              bg: "bg-teal-500/10 border-teal-500/20",
+              title: "Compliance Reporting",
+              status: "Auto-generated",
+              statusColor: "text-teal-400",
+              desc: "Automated report generation for NIST CSF, SOC 2, HIPAA, and CMMC audits. Executive-ready dashboards and evidence packages for insurance carriers.",
+              tags: ["NIST", "SOC 2", "CMMC / HIPAA"],
+            },
+          ].map((item, i) => (
+            <div key={i} className={`p-4 rounded-xl border ${item.bg} bg-card shadow-sm hover:shadow-md transition-shadow`}>
+              <div className="flex items-start justify-between mb-3">
+                <div className={`w-9 h-9 rounded-lg border ${item.bg} flex items-center justify-center shrink-0`}>
+                  <item.icon className={`w-4.5 h-4.5 ${item.color}`} />
+                </div>
+                <span className={`text-[9px] font-black tracking-widest px-2 py-1 rounded-full border ${item.bg} ${item.statusColor}`}>
+                  {item.status}
+                </span>
+              </div>
+              <p className="text-sm font-bold text-foreground mb-1.5">{item.title}</p>
+              <p className="text-xs text-muted-foreground leading-relaxed mb-3">{item.desc}</p>
+              <div className="flex flex-wrap gap-1">
+                {item.tags.map((tag, t) => (
+                  <span key={t} className="text-[9px] font-semibold px-1.5 py-0.5 rounded bg-muted text-muted-foreground border border-border/60">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
 
       {/* Cloudflare / WAF Status */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
