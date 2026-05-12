@@ -12,7 +12,7 @@ export default function LandingFooter() {
               <Shield className="w-3.5 h-3.5 text-amber-400" />
             </div>
             <div>
-              <span className="text-white font-bold text-sm">EDS Ready Hub</span>
+              <span className="text-white font-bold text-sm">EDS Sentrix ASM</span>
               <span className="text-slate-600 text-xs ml-2">by Emerging Defense Solutions</span>
             </div>
           </div>
