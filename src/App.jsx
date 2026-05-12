@@ -16,6 +16,7 @@ import Shop from './pages/Shop';
 import AuditLogs from './pages/AuditLogs';
 import AdminSettings from './pages/AdminSettings';
 import DevSecOps from './pages/DevSecOps';
+import SOCaaS from './pages/SOCaaS';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
@@ -49,6 +50,7 @@ const AuthenticatedApp = () => {
         <Route path="/app/audit" element={<AuditLogs />} />
         <Route path="/app/settings" element={<AdminSettings />} />
         <Route path="/app/devsecops" element={<DevSecOps />} />
+        <Route path="/app/socaas" element={<SOCaaS />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
