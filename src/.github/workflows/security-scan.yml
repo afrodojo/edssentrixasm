@@ -13,6 +13,13 @@ on:
   push:
     branches: [ main ]
 
+# R-B9218: Least-privilege permissions — no job may write to any scope
+# unless explicitly granted at the job level below.
+permissions:
+  contents: read
+  actions: read
+  security-events: write  # required for uploading SARIF artifacts only
+
 jobs:
   security-scan-three:
     runs-on: ubuntu-latest
@@ -30,9 +37,11 @@ jobs:
         run: |
           # Force patched versions of known-vulnerable transitive deps:
           # CVE-2026-33671 (picomatch), CVE-2026-33151 (socket.io-parser), R-6D5E2 (i18next)
+          # CVE-2026-33672: picomatch >=4.0.4 fixes both 2.3.1 and 4.0.3 vulnerable instances
+          # CVE-2026-33151: socket.io-parser proto-pollution
+          # R-6D5E2: i18next XSS interpolation
           npm install \
-            --save-exact \
-            picomatch@2.3.2 \
+            "picomatch@>=4.0.4" \
             "socket.io-parser@>=4.2.6" \
             "i18next@>=3.4.3" \
             --no-save \

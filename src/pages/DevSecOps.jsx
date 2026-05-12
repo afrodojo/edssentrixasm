@@ -153,8 +153,9 @@ const OVERRIDES_SNIPPET = `// package.json — npm "overrides" field
 // after adding these to regenerate package-lock.json.
 {
   "overrides": {
-    // CVE-2026-33671 — ReDoS via crafted glob patterns
-    "picomatch": ">=2.3.2",
+    // CVE-2026-33672 — picomatch ReDoS (fixes both 2.3.1 @line 7778 AND 4.0.3 @line 9345)
+    // Fixed versions: >=4.0.4 | >=3.0.2 | >=2.3.2  — use 4.0.4 to cover all instances
+    "picomatch": ">=4.0.4",
 
     // CVE-2026-33151 — Prototype pollution in socket.io-parser
     "socket.io-parser": ">=4.2.6",
@@ -167,6 +168,52 @@ const OVERRIDES_SNIPPET = `// package.json — npm "overrides" field
 // CI step to verify no high/critical deps survive after install:
 // npm audit --audit-level=high --omit=dev`;
 
+const QUILL_SANITIZE_SNIPPET = `// CVE-2021-3163: quill 1.3.7 — stored XSS via crafted clipboard paste.
+// No fixed version of quill 1.x exists. Mitigation: sanitize ALL quill
+// HTML output with DOMPurify before rendering or persisting to the DB.
+
+import DOMPurify from "dompurify";
+
+// ✅ Safe — sanitize before rendering rich-text HTML
+function SafeRichText({ html }) {
+  const clean = DOMPurify.sanitize(html, {
+    ALLOWED_TAGS: ["b","i","u","s","em","strong","p","br","ul","ol","li",
+                   "blockquote","h1","h2","h3","span","a"],
+    ALLOWED_ATTR: ["href","target","rel","class"],
+    FORCE_BODY: true,
+  });
+  return <div dangerouslySetInnerHTML={{ __html: clean }} />;
+}
+
+// ✅ Safe — sanitize before saving to DB
+async function saveContent(quillRef) {
+  const rawHtml = quillRef.current.getEditor().root.innerHTML;
+  const safeHtml = DOMPurify.sanitize(rawHtml, { FORCE_BODY: true });
+  await api.saveDocument({ content: safeHtml });
+}
+
+// ❌ NEVER do this — raw Quill HTML directly into dangerouslySetInnerHTML
+// <div dangerouslySetInnerHTML={{ __html: quillOutput }} />`;
+
+const WORKFLOW_PERMISSIONS_SNIPPET = `# R-B9218: Least-privilege GitHub Actions permissions
+# Add at the TOP LEVEL of every workflow file — restricts the default
+# GITHUB_TOKEN to read-only. Grant write only at the job level if needed.
+
+permissions:
+  contents: read       # repo checkout only
+  actions: read        # read workflow metadata
+  security-events: write  # only if uploading SARIF / security artifacts
+
+# Job-level override example (grant write only where truly required):
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      id-token: write  # OIDC token for cloud provider auth (e.g. AWS, GCP)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4`;
+
 const sections = [
   {
     id: "overrides",
@@ -175,11 +222,11 @@ const sections = [
     bg: "bg-red-500/10 border-red-500/20",
     badge: "package.json → overrides",
     title: "Transitive CVE Remediation (npm overrides)",
-    subtitle: "Pins picomatch ≥2.3.2, socket.io-parser ≥4.2.6, i18next ≥3.4.3 — eliminates CVE-2026-33671, CVE-2026-33151, R-6D5E2",
+    subtitle: "Pins picomatch ≥4.0.4 (both instances), socket.io-parser ≥4.2.6, i18next ≥3.4.3 — eliminates CVE-2026-33672, CVE-2026-33151, R-6D5E2",
     code: OVERRIDES_SNIPPET,
     lang: "json/bash",
     steps: [
-      { label: "CVE-2026-33671: picomatch ReDoS → pin ≥2.3.2", icon: AlertTriangle, color: "text-red-400" },
+      { label: "CVE-2026-33672: picomatch ReDoS → pin ≥4.0.4 (fixes 2.3.1 + 4.0.3)", icon: AlertTriangle, color: "text-red-400" },
       { label: "CVE-2026-33151: socket.io-parser proto-pollution → pin ≥4.2.6", icon: AlertTriangle, color: "text-red-400" },
       { label: "R-6D5E2: i18next XSS interpolation → pin ≥3.4.3", icon: AlertTriangle, color: "text-tactical-gold" },
       { label: "npm audit --audit-level=high validates post-install", icon: CheckCircle2, color: "text-emerald-400" },
@@ -222,6 +269,44 @@ const sections = [
       { label: "X-Frame-Options: DENY (NIST AC-4)", icon: Lock, color: "text-blue-400" },
       { label: "Cloudflare Trusted Proxy Setup", icon: Cloud, color: "text-emerald-400" },
       { label: "Standalone output for Rafter containers", icon: Terminal, color: "text-violet-400" },
+    ],
+  },
+  {
+    id: "quill",
+    icon: Shield,
+    color: "text-orange-400",
+    bg: "bg-orange-500/10 border-orange-500/20",
+    badge: "CVE-2021-3163 · quill 1.3.7 · No upstream fix",
+    title: "Quill Rich-Text XSS Mitigation (DOMPurify)",
+    subtitle: "No patched quill 1.x exists — sanitize ALL HTML output with DOMPurify before render or DB persistence",
+    code: QUILL_SANITIZE_SNIPPET,
+    lang: "jsx",
+    steps: [
+      { label: "CVE-2021-3163: clipboard paste → stored XSS in quill 1.3.7", icon: AlertTriangle, color: "text-orange-400" },
+      { label: "No fixed version available in quill 1.x branch", icon: AlertTriangle, color: "text-red-400" },
+      { label: "Wrap ALL quill output in DOMPurify.sanitize()", icon: CheckCircle2, color: "text-emerald-400" },
+      { label: "Allowlist only safe tags — block script/iframe/object", icon: Lock, color: "text-blue-400" },
+      { label: "Sanitize on read (render) AND on write (DB save)", icon: CheckCircle2, color: "text-emerald-400" },
+      { label: "Long-term: migrate to quill 2.x or Tiptap", icon: Terminal, color: "text-slate-400" },
+    ],
+  },
+  {
+    id: "permissions",
+    icon: GitBranch,
+    color: "text-violet-400",
+    bg: "bg-violet-500/10 border-violet-500/20",
+    badge: ".github/workflows/*.yml → permissions",
+    title: "GitHub Actions Least-Privilege Permissions (R-B9218)",
+    subtitle: "Top-level permissions: read-only by default — write granted per-job only where strictly required",
+    code: WORKFLOW_PERMISSIONS_SNIPPET,
+    lang: "yaml",
+    steps: [
+      { label: "R-B9218: write-all default grants every job full repo write", icon: AlertTriangle, color: "text-red-400" },
+      { label: "Fix: add permissions: block at workflow top level", icon: CheckCircle2, color: "text-emerald-400" },
+      { label: "contents: read — restricts GITHUB_TOKEN to checkout only", icon: Lock, color: "text-blue-400" },
+      { label: "security-events: write — only for SARIF upload steps", icon: Shield, color: "text-violet-400" },
+      { label: "Override per-job with id-token: write for OIDC cloud auth", icon: Terminal, color: "text-slate-400" },
+      { label: "Applied to security-scan.yml — validate all future workflows", icon: CheckCircle2, color: "text-emerald-400" },
     ],
   },
   {
