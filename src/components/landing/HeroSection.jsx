@@ -116,7 +116,7 @@ export default function HeroSection({ onScrollToWaitlist }) {
           {/* Dashboard mockup */}
           <div className="relative max-w-4xl mx-auto">
             <div className="absolute -inset-4 bg-tactical-gold/5 blur-2xl rounded-3xl" />
-            <div className="relative bg-navy-800 border border-navy-700/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/60 aspect-video flex items-center justify-center group cursor-pointer hover:border-tactical-gold/30 transition-all duration-500">
+            <div onClick={onScrollToWaitlist} className="relative bg-navy-800 border border-navy-700/60 rounded-2xl overflow-hidden shadow-2xl shadow-black/60 aspect-video flex items-center justify-center group cursor-pointer hover:border-tactical-gold/30 transition-all duration-500">
               <div className="absolute top-0 left-0 right-0 h-10 bg-navy-900/90 border-b border-navy-700/50 flex items-center px-4 gap-2">
                 <div className="w-3 h-3 rounded-full bg-tactical-red/70" />
                 <div className="w-3 h-3 rounded-full bg-tactical-gold/70" />

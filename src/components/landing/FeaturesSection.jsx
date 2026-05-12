@@ -1,5 +1,6 @@
 import React from "react";
 import { ShieldCheck, UserCheck, Plane, Scale, ShoppingBag, ArrowRight } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const features = [
   {
@@ -12,6 +13,7 @@ const features = [
     title: "Continuous Compliance Training",
     body: "Automated micro-courses for Cyber Awareness, Active Shooter Response, and CPR/First Aid. Auto-generate certificates to negotiate lower insurance premiums.",
     cta: "Explore Training",
+    href: "/app/training",
   },
   {
     icon: UserCheck,
@@ -23,6 +25,7 @@ const features = [
     title: "Elite Executive Protection",
     body: "Deploy licensed, highly trained EP agents — armed or unarmed — directly to your executives or high-risk assets. Discrete, professional, mission-ready.",
     cta: "Book EP Agents",
+    href: "/app/dispatch",
   },
   {
     icon: Plane,
@@ -34,6 +37,7 @@ const features = [
     title: "Drone & Aerial Operations",
     body: "On-demand drone services for perimeter surveillance, Search & Rescue (SAR), and 4K aerial mapping. Dispatch a drone team to your site in hours.",
     cta: "Request Aerial Ops",
+    href: "/app/dispatch",
   },
   {
     icon: Scale,
@@ -45,6 +49,7 @@ const features = [
     title: "Legal Dispatch & Site Hardening",
     body: "Instantly book vetted Mobile Notaries, Process Servers, or CPTED-compliant landscaping to harden your physical footprint. Real-time tracking included.",
     cta: "Dispatch Now",
+    href: "/app/dispatch",
   },
   {
     icon: ShoppingBag,
@@ -56,6 +61,7 @@ const features = [
     title: "B2B Partner Pro Shop",
     body: "Bulk-order 5.11 Tactical gear for your security team, enroll in Right to Bear legal defense policies, and request Cisco Meraki or Azure upgrades — all in-dashboard.",
     cta: "Browse Pro Shop",
+    href: "/app/shop",
   },
 ];
 
@@ -84,9 +90,10 @@ export default function FeaturesSection() {
         {/* Feature grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-5">
           {features.map((f, i) => (
-            <div
+            <Link
               key={i}
-              className={`relative group p-6 rounded-2xl bg-gradient-to-b ${f.color} border ${f.border} hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/40 transition-all duration-300 cursor-pointer`}
+              to={f.href}
+              className={`relative group p-6 rounded-2xl bg-gradient-to-b ${f.color} border ${f.border} hover:scale-[1.02] hover:shadow-2xl hover:shadow-black/40 transition-all duration-300 cursor-pointer block`}
             >
               <div className={`w-11 h-11 rounded-xl border ${f.iconBg} flex items-center justify-center mb-5`}>
                 <f.icon className={`w-5 h-5 ${f.iconColor}`} />
@@ -100,7 +107,7 @@ export default function FeaturesSection() {
                 <span>{f.cta}</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
