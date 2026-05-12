@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Menu, X, LayoutDashboard } from "lucide-react";
+import { Menu, X, LayoutDashboard, LogIn } from "lucide-react";
 import { Link } from "react-router-dom";
 
 export default function Navbar({ onJoinBeta }) {
@@ -43,8 +43,8 @@ export default function Navbar({ onJoinBeta }) {
                 to="/app"
                 className="px-4 py-2 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 text-sm font-semibold rounded-lg transition-all duration-200 flex items-center gap-1.5"
               >
-                <LayoutDashboard className="w-3.5 h-3.5" />
-                App Demo
+                <LogIn className="w-3.5 h-3.5" />
+                Sign In
               </Link>
               <button
                 onClick={onJoinBeta}
@@ -72,6 +72,14 @@ export default function Navbar({ onJoinBeta }) {
             <a href="#features" className="block text-slate-300 hover:text-white py-2 text-sm" onClick={() => setMenuOpen(false)}>Features</a>
             <a href="#trust" className="block text-slate-300 hover:text-white py-2 text-sm" onClick={() => setMenuOpen(false)}>Security</a>
             <a href="#waitlist" className="block text-slate-300 hover:text-white py-2 text-sm" onClick={() => setMenuOpen(false)}>Beta Access</a>
+            <Link
+              to="/app"
+              onClick={() => setMenuOpen(false)}
+              className="w-full flex items-center gap-2 px-5 py-2.5 bg-slate-800 border border-slate-700 text-slate-200 text-sm font-semibold rounded-lg transition-all"
+            >
+              <LogIn className="w-4 h-4" />
+              Sign In
+            </Link>
             <button
               onClick={() => { onJoinBeta(); setMenuOpen(false); }}
               className="w-full px-5 py-2.5 bg-amber-500 hover:bg-amber-400 text-slate-950 text-sm font-bold rounded-lg transition-all"

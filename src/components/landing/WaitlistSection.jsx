@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { ArrowRight, CheckCircle2, Zap, Gift, Tag } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Gift, Tag, LogIn } from "lucide-react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
+import { Link } from "react-router-dom";
 
 const perks = [
   { icon: Gift, text: "First 3 legal dispatches — free" },
@@ -95,7 +96,7 @@ export default function WaitlistSection() {
               </p>
             </form>
           ) : (
-            <div className="py-6 flex flex-col items-center gap-3">
+            <div className="py-6 flex flex-col items-center gap-4">
               <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center">
                 <CheckCircle2 className="w-7 h-7 text-emerald-400" />
               </div>
@@ -103,6 +104,16 @@ export default function WaitlistSection() {
               <p className="text-slate-400 text-sm max-w-sm text-center">
                 We'll reach out with your exclusive beta invite and early-bird pricing details within 24–48 hours.
               </p>
+              <div className="w-full border-t border-slate-700/60 pt-4 mt-1 flex flex-col items-center gap-2">
+                <p className="text-slate-500 text-xs">Already approved? Access your dashboard below.</p>
+                <Link
+                  to="/app"
+                  className="flex items-center gap-2 px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-sm font-semibold rounded-xl transition-all duration-200 hover:border-amber-500/40"
+                >
+                  <LogIn className="w-4 h-4" />
+                  Sign In to Dashboard
+                </Link>
+              </div>
             </div>
           )}
         </div>
