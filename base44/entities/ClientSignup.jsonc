@@ -1,0 +1,67 @@
+{
+  "name": "ClientSignup",
+  "type": "object",
+  "properties": {
+    "org_name": {
+      "type": "string",
+      "description": "Company / Organization name"
+    },
+    "contact_name": {
+      "type": "string",
+      "description": "Primary contact full name"
+    },
+    "email": {
+      "type": "string",
+      "description": "Business email address"
+    },
+    "phone": {
+      "type": "string",
+      "description": "Contact phone number"
+    },
+    "industry": {
+      "type": "string",
+      "enum": [
+        "law_firm",
+        "property_management",
+        "medical_clinic",
+        "corporate",
+        "government",
+        "other"
+      ],
+      "default": "corporate"
+    },
+    "interest": {
+      "type": "string",
+      "description": "Which services are they interested in?"
+    },
+    "message": {
+      "type": "string",
+      "description": "Additional message from the applicant"
+    },
+    "approval_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "approved",
+        "rejected"
+      ],
+      "default": "pending"
+    },
+    "reviewed_by": {
+      "type": "string",
+      "description": "Admin email who reviewed"
+    },
+    "review_notes": {
+      "type": "string",
+      "description": "Internal notes on the decision"
+    },
+    "reviewed_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  },
+  "required": [
+    "org_name",
+    "email"
+  ]
+}

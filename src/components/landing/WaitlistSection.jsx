@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArrowRight, CheckCircle2, Zap, Gift, Tag, LogIn } from "lucide-react";
+import { ArrowRight, CheckCircle2, Zap, Gift, Tag, LogIn, Clock } from "lucide-react";
 import { toast } from "sonner";
 import { base44 } from "@/api/base44Client";
 import { Link } from "react-router-dom";
@@ -10,21 +10,34 @@ const perks = [
   { icon: Zap, text: "Priority access before public launch" },
 ];
 
+const industryOptions = [
+  { value: "law_firm", label: "Law Firm" },
+  { value: "property_management", label: "Property Management" },
+  { value: "medical_clinic", label: "Medical Clinic" },
+  { value: "corporate", label: "Corporate" },
+  { value: "government", label: "Government" },
+  { value: "other", label: "Other" },
+];
+
 export default function WaitlistSection() {
-  const [email, setEmail] = useState("");
-  const [org, setOrg] = useState("");
+  const [form, setForm] = useState({ org_name: "", contact_name: "", email: "", phone: "", industry: "", interest: "", message: "" });
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!email.includes("@")) { toast.error("Please enter a valid email."); return; }
-    setSubmitted(true);
-    toast.success("You've secured your beta spot!");
-    await base44.integrations.Core.SendEmail({
-      to: "info@eds-360.com",
-      subject: "New Waitlist Signup — EDS Sentrix ASM Beta",
-      body: `A new beta waitlist submission was received.\n\nOrganization: ${org}\nEmail: ${email}`,
-    });
+    if (!form.email.includes("@")) { toast.error("Please enter a valid email."); return; }
+    if (!form.org_name.trim()) { toast.error("Please enter your organization name."); return; }
+    setLoading(true);
+    try {
+      await base44.functions.invoke("clientSignup", form);
+      setSubmitted(true);
+    } catch (err) {
+      toast.error("Submission failed. Please try again.");
+    }
+    setLoading(false);
   };
 
   return (
@@ -68,48 +81,56 @@ export default function WaitlistSection() {
         <div className="bg-slate-900/60 backdrop-blur-sm border border-slate-700/60 rounded-2xl p-6 sm:p-8 shadow-2xl shadow-black/40">
           {!submitted ? (
             <form onSubmit={handleSubmit} className="space-y-3">
-              <input
-                type="text"
-                value={org}
-                onChange={(e) => setOrg(e.target.value)}
-                placeholder="Company / Organization name"
-                className="w-full h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all"
-              />
-              <div className="flex flex-col sm:flex-row gap-3">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="Business email address"
-                  className="flex-1 h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all"
-                />
-                <button
-                  type="submit"
-                  className="sm:shrink-0 h-12 px-7 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-sm transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/25 active:scale-95 flex items-center justify-center gap-2"
-                >
-                  Join the Waitlist
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="text" value={form.org_name} onChange={set("org_name")} required
+                  placeholder="Organization name *"
+                  className="h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all" />
+                <input type="text" value={form.contact_name} onChange={set("contact_name")}
+                  placeholder="Your full name"
+                  className="h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all" />
               </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <input type="email" value={form.email} onChange={set("email")} required
+                  placeholder="Business email *"
+                  className="h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all" />
+                <input type="tel" value={form.phone} onChange={set("phone")}
+                  placeholder="Phone number"
+                  className="h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all" />
+              </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <select value={form.industry} onChange={set("industry")}
+                  className="h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all appearance-none"
+                  style={{ color: form.industry ? "white" : "rgb(107 114 128)" }}>
+                  <option value="" disabled>Industry</option>
+                  {industryOptions.map(o => <option key={o.value} value={o.value} className="bg-slate-800 text-white">{o.label}</option>)}
+                </select>
+                <input type="text" value={form.interest} onChange={set("interest")}
+                  placeholder="Services you're interested in"
+                  className="h-12 px-5 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all" />
+              </div>
+              <textarea value={form.message} onChange={set("message")} rows={2}
+                placeholder="Anything else you'd like us to know? (optional)"
+                className="w-full px-5 py-3 bg-slate-800/60 border border-slate-700 rounded-xl text-white placeholder-slate-500 text-sm focus:outline-none focus:ring-2 focus:ring-amber-500/40 focus:border-amber-500/40 transition-all resize-none" />
+              <button type="submit" disabled={loading}
+                className="w-full h-12 bg-amber-500 hover:bg-amber-400 disabled:opacity-60 text-slate-950 font-bold rounded-xl text-sm transition-all duration-200 hover:shadow-xl hover:shadow-amber-500/25 active:scale-95 flex items-center justify-center gap-2">
+                {loading ? "Submitting…" : <><span>Apply for Beta Access</span><ArrowRight className="w-4 h-4" /></>}
+              </button>
               <p className="text-slate-600 text-xs text-center pt-1">
-                No credit card required · DMV area businesses only · Beta spots are limited
+                Applications reviewed within 24–48 hours · DMV area businesses only
               </p>
             </form>
           ) : (
             <div className="py-6 flex flex-col items-center gap-4">
-              <div className="w-14 h-14 bg-emerald-500/10 border border-emerald-500/20 rounded-full flex items-center justify-center">
-                <CheckCircle2 className="w-7 h-7 text-emerald-400" />
+              <div className="w-14 h-14 bg-amber-500/10 border border-amber-500/20 rounded-full flex items-center justify-center">
+                <Clock className="w-7 h-7 text-amber-400" />
               </div>
-              <h3 className="text-white font-bold text-lg">You're on the list!</h3>
+              <h3 className="text-white font-bold text-lg">Application Submitted!</h3>
               <p className="text-slate-400 text-sm max-w-sm text-center">
-                We'll reach out with your exclusive beta invite and early-bird pricing details within 24–48 hours.
+                Your application is under review. Our team will verify your information and respond within 24–48 hours. Check your email for a confirmation.
               </p>
               <div className="w-full border-t border-slate-700/60 pt-4 mt-1 flex flex-col items-center gap-2">
                 <p className="text-slate-500 text-xs">Already approved? Access your dashboard below.</p>
-                <Link
-                  to="/app"
-                  className="flex items-center gap-2 px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-sm font-semibold rounded-xl transition-all duration-200 hover:border-amber-500/40"
-                >
+                <Link to="/app" className="flex items-center gap-2 px-6 py-2.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 text-sm font-semibold rounded-xl transition-all duration-200 hover:border-amber-500/40">
                   <LogIn className="w-4 h-4" />
                   Sign In to Dashboard
                 </Link>

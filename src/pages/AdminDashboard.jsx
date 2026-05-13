@@ -1,11 +1,12 @@
 import React, { useState } from "react";
-import { LayoutDashboard, Building2, KeyRound, Server, GitBranch, Shield, Users, Lock, Bell, CheckCircle2, X, ShieldX } from "lucide-react";
+import { LayoutDashboard, Building2, KeyRound, Server, GitBranch, Shield, Users, Lock, Bell, CheckCircle2, X, ShieldX, UserCheck } from "lucide-react";
 import AdminDashboardOverview from "../components/admin/AdminDashboardOverview";
 import OrgOverview from "../components/admin/OrgOverview";
 import LicenseManager from "../components/admin/LicenseManager";
 import InfraManager from "../components/admin/InfraManager";
 import SDLCTracker from "../components/admin/SDLCTracker";
 import RBACMatrix from "../components/admin/RBACMatrix";
+import ClientApprovals from "../components/admin/ClientApprovals";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/AuthContext";
 
@@ -17,6 +18,7 @@ const tabs = [
   { id: "licenses",  label: "Licenses",       icon: KeyRound },
   { id: "infra",     label: "Infrastructure", icon: Server },
   { id: "sdlc",      label: "SDLC Projects",  icon: GitBranch },
+  { id: "approvals", label: "Client Approvals", icon: UserCheck },
   { id: "rbac",      label: "Access Control", icon: Shield },
 ];
 
@@ -89,6 +91,7 @@ export default function AdminDashboard() {
       {activeTab === "licenses"  && <LicenseManager />}
       {activeTab === "infra"     && <InfraManager />}
       {activeTab === "sdlc"      && <SDLCTracker />}
+      {activeTab === "approvals" && <ClientApprovals />}
       {activeTab === "rbac"      && (
         <div className="space-y-4">
           <RBACMatrix />
