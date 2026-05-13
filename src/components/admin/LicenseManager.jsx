@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { base44 } from "@/api/base44Client";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { KeyRound, Plus, CheckCircle2, XCircle, Clock, AlertTriangle, Pencil, Trash2, RefreshCw } from "lucide-react";
+import { KeyRound, Plus, CheckCircle2, XCircle, Clock, AlertTriangle, Pencil, Trash2, RefreshCw, BarChart2, ShieldOff } from "lucide-react";
 import { toast } from "sonner";
 import { format, parseISO, differenceInDays } from "date-fns";
 import LicenseFormModal from "./LicenseFormModal";
@@ -34,6 +34,38 @@ export default function LicenseManager() {
   const qc = useQueryClient();
   const [editLic, setEditLic] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
+  const [reporting, setReporting] = useState(false);
+  const [suspending, setSuspending] = useState(false);
+
+  const runReport = async () => {
+    setReporting(true);
+    try {
+      const res = await base44.functions.invoke('clickupBilling', { mode: 'report' });
+      toast.success(`Report task created in ClickUp!`);
+      if (res.data?.tasksCreated?.[0]?.taskUrl) window.open(res.data.tasksCreated[0].taskUrl, '_blank');
+    } catch (e) {
+      toast.error('Failed to create report: ' + e.message);
+    }
+    setReporting(false);
+  };
+
+  const runSuspendCheck = async () => {
+    if (!confirm('Run payment check now? Organizations overdue by 10+ days will be automatically suspended.')) return;
+    setSuspending(true);
+    try {
+      const res = await base44.functions.invoke('clickupBilling', { mode: 'suspend_check' });
+      const n = res.data?.suspended?.length || 0;
+      if (n > 0) {
+        toast.warning(`${n} org(s) suspended for overdue payment. ClickUp tasks created.`);
+        qc.invalidateQueries(['licenses']);
+      } else {
+        toast.success('Payment check complete — no overdue accounts found.');
+      }
+    } catch (e) {
+      toast.error('Suspension check failed: ' + e.message);
+    }
+    setSuspending(false);
+  };
 
   const { data: licenses = [], isLoading } = useQuery({
     queryKey: ["licenses"],
@@ -80,7 +112,13 @@ export default function LicenseManager() {
         ))}
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex flex-wrap items-center justify-end gap-2">
+        <button onClick={runReport} disabled={reporting} className="flex items-center gap-2 px-4 py-2 bg-blue-500/10 hover:bg-blue-500/20 border border-blue-500/30 text-blue-400 text-sm font-bold rounded-lg transition-all active:scale-95 disabled:opacity-50">
+          <BarChart2 className="w-4 h-4" /> {reporting ? 'Creating Report…' : 'Run Usage Report → ClickUp'}
+        </button>
+        <button onClick={runSuspendCheck} disabled={suspending} className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-400 text-sm font-bold rounded-lg transition-all active:scale-95 disabled:opacity-50">
+          <ShieldOff className="w-4 h-4" /> {suspending ? 'Checking…' : 'Run Payment Check'}
+        </button>
         <button onClick={() => setShowCreate(true)} className="flex items-center gap-2 px-4 py-2 bg-tactical-gold hover:bg-tactical-amber text-navy-900 text-sm font-bold rounded-lg transition-all active:scale-95">
           <Plus className="w-4 h-4" /> Issue License
         </button>
