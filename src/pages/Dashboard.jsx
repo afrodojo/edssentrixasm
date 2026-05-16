@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ReadinessScore from "../components/dashboard/ReadinessScore";
 import StatsRow from "../components/dashboard/StatsRow";
 import TrustBanner from "../components/dashboard/TrustBanner";
+import ThyreosSyncSummary from "../components/dashboard/ThyreosSyncSummary";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CalendarDays, Bell, FileText, Scissors, Activity, ShieldCheck, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
@@ -150,6 +151,9 @@ export default function Dashboard() {
           </Card>
         </div>
       </div>
+
+      {/* Thyreos C2 Threat Telemetry Sync */}
+      <ThyreosSyncSummary />
 
       <TrustBanner />
     </div>
