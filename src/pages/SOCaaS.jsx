@@ -15,12 +15,12 @@ const stats = [
 ];
 
 const endpointStatus = [
-  { name: "Reception-PC", status: "clean", ip: "10.0.1.4", os: "Windows 11" },
-  { name: "CFO-Laptop", status: "clean", ip: "10.0.1.9", os: "macOS 14" },
-  { name: "Server-MAIN", status: "warning", ip: "10.0.1.1", os: "Ubuntu 22.04" },
-  { name: "Conference-AV", status: "clean", ip: "10.0.1.15", os: "Android 14" },
-  { name: "HR-Workstation", status: "isolated", ip: "10.0.1.22", os: "Windows 11" },
-  { name: "Dev-MacBook", status: "clean", ip: "10.0.1.31", os: "macOS 14" },
+  { name: "GCP-PROD-01", status: "clean", ip: "10.0.1.4", os: "Ubuntu 24.04 LTS" },
+  { name: "GCP-DB-PRIMARY", status: "clean", ip: "10.0.1.9", os: "Debian 12" },
+  { name: "GCP-APP-SERVER", status: "warning", ip: "10.0.1.1", os: "Ubuntu 22.04 LTS" },
+  { name: "GCP-BASTION", status: "clean", ip: "10.0.1.15", os: "Rocky Linux 9" },
+  { name: "GCP-WORKER-01", status: "isolated", ip: "10.0.1.22", os: "Ubuntu 22.04 LTS" },
+  { name: "GCP-LOGGING-SVC", status: "clean", ip: "10.0.1.31", os: "Debian 12" },
 ];
 
 export default function SOCaaS() {
@@ -146,8 +146,8 @@ export default function SOCaaS() {
               title: "SIEM Log Aggregation",
               status: "14,200 events/min",
               statusColor: "text-violet-400",
-              desc: "Centralized ingestion of logs from endpoints, cloud workloads, firewalls, and SaaS apps. Normalized into a unified event schema for correlation and analysis.",
-              tags: ["Splunk-compatible", "CEF/Syslog", "S3 export"],
+              desc: "Centralized ingestion of logs from GCP, AWS, Cloudflare, and on-prem Linux hosts. Normalized into a unified event schema for cross-cloud correlation and analysis.",
+              tags: ["GCP Logging", "CEF/Syslog", "Multi-Cloud"],
             },
             {
               icon: Search,
@@ -186,8 +186,8 @@ export default function SOCaaS() {
               title: "EDR — Endpoint Detection",
               status: `${endpointStatus.length} Endpoints`,
               statusColor: "text-cyan-400",
-              desc: "Lightweight agent-based telemetry on all managed endpoints. Real-time process monitoring, memory injection detection, and automated isolation of compromised hosts.",
-              tags: ["Win / Mac / Linux", "Memory analysis", "Auto-isolate"],
+              desc: "Lightweight agent-based telemetry on all managed Linux hosts and GCP compute instances. Real-time process monitoring, memory injection detection, and automated isolation of compromised hosts.",
+              tags: ["Linux / GCP", "Memory analysis", "Auto-isolate"],
             },
             {
               icon: FileSearch,
@@ -257,8 +257,8 @@ export default function SOCaaS() {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         {[
           { label: "Cloudflare WAF", status: "ACTIVE", icon: Globe, color: "text-emerald-400", sub: "2,841 requests filtered today" },
-          { label: "VPN Tunnel", status: "CONNECTED", icon: Wifi, color: "text-blue-400", sub: "AES-256 · Zero Trust tunnel" },
-          { label: "SIEM Ingestion", status: "LIVE", icon: Server, color: "text-violet-400", sub: "14,200 events/min ingested" },
+          { label: "GCP Cloud Armor", status: "ACTIVE", icon: Shield, color: "text-blue-400", sub: "Google Cloud · us-east4 region" },
+          { label: "SIEM Ingestion", status: "LIVE", icon: Server, color: "text-violet-400", sub: "14,200 events/min · GCP Logging" },
         ].map((item, i) => (
           <div key={i} className="flex items-center gap-4 p-4 rounded-xl border border-border/60 bg-card shadow-sm">
             <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center shrink-0">

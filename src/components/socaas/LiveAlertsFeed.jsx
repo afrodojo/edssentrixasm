@@ -3,23 +3,23 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, ShieldCheck, XCircle, Info, Radio } from "lucide-react";
 
 const INITIAL_ALERTS = [
-  { id: 1, time: "10:58 AM", severity: "critical", msg: "Brute-force attempt blocked — 89.34.221.4 (RU) → SSH Port 22", device: "Server-MAIN" },
+  { id: 1, time: "10:58 AM", severity: "critical", msg: "Brute-force attempt blocked — 89.34.221.4 (RU) → SSH Port 22", device: "GCP-PROD-01" },
   { id: 2, time: "10:51 AM", severity: "blocked", msg: "Unauthorized login attempt blocked via Cloudflare WAF", device: "Web Gateway" },
-  { id: 3, time: "10:44 AM", severity: "warning", msg: "Endpoint malware signature detected — quarantined", device: "HR-Workstation" },
-  { id: 4, time: "10:38 AM", severity: "blocked", msg: "DNS exfiltration attempt blocked — Cloudflare 1.1.1.1 resolver", device: "Reception-PC" },
-  { id: 5, time: "10:22 AM", severity: "info", msg: "Aikido Security Scan completed — 0 critical CVEs found", device: "CI Pipeline" },
-  { id: 6, time: "10:15 AM", severity: "info", msg: "MFA authentication verified — user: j.doe@eds.com", device: "CFO-Laptop" },
-  { id: 7, time: "09:58 AM", severity: "warning", msg: "Unusual outbound traffic spike detected — 4.2 GB/hr", device: "Server-MAIN" },
-  { id: 8, time: "09:44 AM", severity: "blocked", msg: "SQLi injection attempt blocked in web form parameter", device: "Web App Firewall" },
-  { id: 9, time: "09:31 AM", severity: "info", msg: "Certificate renewed — sentrix.eds.com — expires 2027-05-12", device: "Cloudflare SSL" },
-  { id: 10, time: "09:02 AM", severity: "info", msg: "Vulnerability scan completed — 2 medium findings patched", device: "Dev-MacBook" },
+  { id: 3, time: "10:44 AM", severity: "warning", msg: "GCP-WORKER-01 process anomaly — unexpected cron spawned", device: "GCP-WORKER-01" },
+  { id: 4, time: "10:38 AM", severity: "blocked", msg: "DNS exfiltration attempt blocked — Cloudflare 1.1.1.1 resolver", device: "GCP-BASTION" },
+  { id: 5, time: "10:22 AM", severity: "info", msg: "Aikido Security Scan completed — 0 critical CVEs found", device: "GCP CI Pipeline" },
+  { id: 6, time: "10:15 AM", severity: "info", msg: "MFA authentication verified — user: j.doe@eds.com", device: "GCP IAM" },
+  { id: 7, time: "09:58 AM", severity: "warning", msg: "Unusual outbound traffic spike — 4.2 GB/hr on eth0", device: "GCP-APP-SERVER" },
+  { id: 8, time: "09:44 AM", severity: "blocked", msg: "SQLi injection attempt blocked in web form parameter", device: "GCP Cloud Armor" },
+  { id: 9, time: "09:31 AM", severity: "info", msg: "SSL certificate renewed — sentrix.eds.com — expires 2027-05-12", device: "Cloudflare SSL" },
+  { id: 10, time: "09:02 AM", severity: "info", msg: "Linux kernel patched — 6.8.9 → 6.8.11 · GCP-DB-PRIMARY", device: "GCP-DB-PRIMARY" },
 ];
 
 const NEW_ALERTS = [
-  { severity: "critical", msg: "Port scan detected from 185.220.101.0/24 (TOR exit node)", device: "Firewall" },
-  { severity: "blocked", msg: "XSS payload blocked in contact form submission", device: "Web App Firewall" },
-  { severity: "warning", msg: "Failed API authentication — 12 attempts in 60s", device: "API Gateway" },
-  { severity: "info", msg: "Patch deployed successfully — kernel 6.8.9 → 6.8.11", device: "Server-MAIN" },
+  { severity: "critical", msg: "Port scan detected from 185.220.101.0/24 (TOR exit node)", device: "GCP Cloud Armor" },
+  { severity: "blocked", msg: "XSS payload blocked in contact form submission", device: "GCP WAF" },
+  { severity: "warning", msg: "Failed GCP IAM API auth — 12 attempts in 60s", device: "GCP IAM" },
+  { severity: "info", msg: "Linux kernel patch deployed — Ubuntu 22.04 → 24.04 LTS", device: "GCP-PROD-01" },
 ];
 
 const severityConfig = {

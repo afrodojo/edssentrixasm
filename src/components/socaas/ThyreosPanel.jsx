@@ -21,8 +21,8 @@ const divisions = [
 const certs = ["SOC 2 Type II", "ISO 27001", "NIST CSF", "CMMC Ready", "FedRAMP Auth"];
 
 const eventStream = [
-  { age: "00:29s", msg: "Threat hunt sweep complete — 0 indicators", color: "text-emerald-400" },
-  { age: "00:34s", msg: "HITL approval required — Firewall rule change", color: "text-amber-400" },
+  { age: "00:29s", msg: "Threat hunt sweep complete — 0 indicators found", color: "text-emerald-400" },
+  { age: "00:34s", msg: "HITL approval required — GCP firewall rule change", color: "text-amber-400" },
   { age: "00:02s", msg: "Cloudflare WAF blocked SQLi — 203.0.113.45", color: "text-red-400" },
 ];
 
