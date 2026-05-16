@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import ThreatMap from "../components/socaas/ThreatMap";
 import LiveAlertsFeed from "../components/socaas/LiveAlertsFeed";
+import ThyreosPanel from "../components/socaas/ThyreosPanel";
 
 const stats = [
   { label: "Threats Blocked (24h)", value: "1,247", delta: "+18%", icon: Shield, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/20" },
@@ -52,6 +53,9 @@ export default function SOCaaS() {
           {escalating ? "Escalating…" : "Escalate to EDS Incident Response Team"}
         </Button>
       </div>
+
+      {/* Thyreos C2 Integration Panel */}
+      <ThyreosPanel />
 
       {/* Stats Row */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
