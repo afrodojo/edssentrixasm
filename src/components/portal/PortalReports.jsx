@@ -31,16 +31,20 @@ export default function PortalReports() {
     enabled: !!user,
   });
 
+  const { data: infraAssets = [] } = useQuery({
+    queryKey: ["portal_assets", user?.email],
+    queryFn: () => base44.entities.InfraAsset.filter({ created_by: user?.email }, "-created_date", 100),
+    enabled: !!user,
+  });
+
   const handleGenerate = async (period) => {
     setGenerating(period.value);
     try {
-      const res = await base44.functions.invoke("generateComplianceReport", {
+      const res = await base44.functions.invoke("generateCompliancePDF", {
         period_label: period.label,
         period_start: period.start,
         period_end: period.end,
-        user_email: user?.email,
-        user_name: user?.full_name,
-        licenses,
+        org_id: licenses[0]?.organization_id,
       });
       setReports(prev => ({ ...prev, [period.value]: res.data }));
     } catch (e) {
@@ -50,11 +54,17 @@ export default function PortalReports() {
   };
 
   const handleDownload = (period, report) => {
-    const blob = new Blob([report.content], { type: "text/plain" });
+    if (!report.pdf_base64) return;
+    const byteString = atob(report.pdf_base64);
+    const byteArray = new Uint8Array(byteString.length);
+    for (let i = 0; i < byteString.length; i++) {
+      byteArray[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([byteArray], { type: "application/pdf" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `EDS-Compliance-Report-${period.value}.txt`;
+    a.download = report.filename || `EDS-Compliance-Report-${period.value}.pdf`;
     a.click();
     URL.revokeObjectURL(url);
   };
