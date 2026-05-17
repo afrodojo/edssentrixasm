@@ -7,19 +7,21 @@ import InfraManager from "../components/admin/InfraManager";
 import SDLCTracker from "../components/admin/SDLCTracker";
 import RBACMatrix from "../components/admin/RBACMatrix";
 import ClientApprovals from "../components/admin/ClientApprovals";
+import SecurityPostureScore from "../components/admin/SecurityPostureScore";
 import { toast } from "sonner";
 import { useAuth } from "@/lib/AuthContext";
 
 const ALLOWED_DOMAINS = ["emergingdefensesolutions.com", "eds-360.com"];
 
 const tabs = [
-  { id: "overview",  label: "Overview",       icon: LayoutDashboard },
-  { id: "orgs",      label: "Organizations",  icon: Building2 },
-  { id: "licenses",  label: "Licenses",       icon: KeyRound },
-  { id: "infra",     label: "Infrastructure", icon: Server },
-  { id: "sdlc",      label: "SDLC Projects",  icon: GitBranch },
-  { id: "approvals", label: "Client Approvals", icon: UserCheck },
-  { id: "rbac",      label: "Access Control", icon: Shield },
+  { id: "overview",  label: "Overview",           icon: LayoutDashboard },
+  { id: "orgs",      label: "Organizations",      icon: Building2 },
+  { id: "security",  label: "Security Posture",   icon: Shield },
+  { id: "licenses",  label: "Licenses",           icon: KeyRound },
+  { id: "infra",     label: "Infrastructure",     icon: Server },
+  { id: "sdlc",      label: "SDLC Projects",      icon: GitBranch },
+  { id: "approvals", label: "Client Approvals",   icon: UserCheck },
+  { id: "rbac",      label: "Access Control",     icon: Shield },
 ];
 
 export default function AdminDashboard() {
@@ -88,6 +90,7 @@ export default function AdminDashboard() {
       {/* Tab Content */}
       {activeTab === "overview"  && <AdminDashboardOverview />}
       {activeTab === "orgs"      && <OrgOverview />}
+      {activeTab === "security"  && <SecurityPostureScore />}
       {activeTab === "licenses"  && <LicenseManager />}
       {activeTab === "infra"     && <InfraManager />}
       {activeTab === "sdlc"      && <SDLCTracker />}
